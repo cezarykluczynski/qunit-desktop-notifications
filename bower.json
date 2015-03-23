@@ -1,0 +1,26 @@
+{
+  "name": "qunit-desktop-notifications",
+  "description": "HMLT5 desktop notifications for QUnit testing framework",
+  "homepage": "https://github.com/cezarykluczynski/qunit-desktop-notifications",
+  "version": "0.0.1-pre.1",
+  "authors": [
+    {
+      "name": "Cezary Kluczyński",
+      "email": "cezary.kluczynski@gmail.com"
+    }
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:cezarykluczynski/qunit-desktop-notifications.git"
+  },
+  "ignore": [
+    "Gruntfile.js",
+    "node_modules",
+    "*.json",
+    "tests"
+  ],
+  "devDependencies": {
+    "qunit": "~1.17.1"
+  }
+}
