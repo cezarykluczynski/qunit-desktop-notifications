@@ -1,0 +1,33 @@
+{
+  "name": "qunit-desktop-notifications",
+  "description": "HMLT5 desktop notifications for QUnit testing framework",
+  "homepage": "https://github.com/cezarykluczynski/qunit-desktop-notifications",
+  "version": "0.0.1-pre.1",
+  "author": {
+    "name": "Cezary Kluczyński",
+    "email": "cezary.kluczynski@gmail.com",
+    "url": "https://github.com/cezarykluczynski"
+  },
+  "contributors": [
+    {
+      "name": "Cezary Kluczyński",
+      "email": "cezary.kluczynski@gmail.com",
+      "url": "https://github.com/cezarykluczynski"
+    }
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:cezarykluczynski/qunit-desktop-notifications.git"
+  },
+  "bugs": {
+    "url": "https://github.com/cezarykluczynski/qunit-desktop-notifications/issues"
+  },
+  "keywords": [
+    "qunit",
+    "desktop-notifications"
+  ],
+  "devDependencies": {
+    "intern": "^2.2.2"
+  }
+}
