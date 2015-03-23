@@ -1,0 +1,11 @@
+# Node modules should not be commited
+node_modules
+
+# Bower components should not be commited
+bower_components
+
+# Ignore logs
+npm-debug.log
+
+# Sublime project files are local
+*.sublime*
