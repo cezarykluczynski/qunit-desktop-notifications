@@ -27,7 +27,11 @@
     "qunit",
     "desktop-notifications"
   ],
+  "scripts": {
+    "test": "grunt test"
+  },
   "devDependencies": {
-    "intern": "^2.2.2"
+    "intern": "~2.2.2",
+    "grunt": "~0.4.5"
   }
 }
