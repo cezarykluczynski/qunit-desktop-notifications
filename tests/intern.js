@@ -9,7 +9,6 @@ define({
 	},
 	environments: [
 		{ browserName: "firefox" },
-		{ browserName: "internet explorer" },
 		{ browserName: "chrome" }
 	],
 	maxConcurrency: 1,
@@ -19,6 +18,6 @@ define({
 			{ name: "tests", location: "tests/" }
 		]
 	},
-	functionalSuites: [],
+	functionalSuites: [ "tests/functional/register" ],
 	excludeInstrumentation: /^(node_modules|bower_components|tests)/
 });
