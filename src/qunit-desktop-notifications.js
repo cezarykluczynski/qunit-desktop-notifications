@@ -27,7 +27,7 @@ QUnitDesktopNotifications.start = function () {
 		return false;
 	}
 
-	this.prependToDom();
+	this.prependURLConfigItem();
 	this.addQUnitHandlers();
 
 	return true;
@@ -148,27 +148,41 @@ QUnitDesktopNotifications.log = {
 	testStart: function () {}
 };
 
-QUnitDesktopNotifications.prependToDom = function () {
+QUnitDesktopNotifications.prependURLConfigItem = function () {
+	/** Register urlConfig entry that will let switch profiles. */
+	QUnit.config.urlConfig.push({
+		/** Short for "desktop notifications profile". */
+		id: "dnp",
+		/** Label will also be a entry point for profiles configurator. */
+		label: "<a id=\"qunit-desktop-notifications-entry\" href=\"javascript:void(0)\">" +
+			"Desktop Notifications</a> profile",
+		tooltip: "Profiles can be configured when Desktop Notifications link is clicked. If no profile is " +
+			"selected, the first profile on the list is treated as default. Page reload is required for this " +
+			"list to refresh available profiles.",
+		value: this.profiles.names()
+	});
+};
+
+QUnitDesktopNotifications.prependLinkToDom = function () {
+	/** Return if URL config item should be prepended. */
 	if ( this.config.urlConfig ) {
-		/** Register urlConfig entry that will let switch profiles. */
-		QUnit.config.urlConfig.push({
-			/** Short for "desktop notifications profile". */
-			id: "dnp",
-			/** Label will also be a entry point for profiles configurator. */
-			label: "<a id=\"qunit-desktop-notifications-entry\" href=\"javascript:void(0)\">" +
-				"Desktop Notifications</a> profile",
-			tooltip: "Profiles can be configured when Desktop Notifications link is clicked. If no profile is " +
-				"selected, the first profile on the list is treated as default. Page reload is required for this " +
-				"list to refresh available profiles.",
-			value: this.profiles.names()
-		});
-	} else {
-		var link = document.createElement( "a" );
-		link.innerText = "Desktop Notifications";
-		link.href = "javascript:void(0)";
-		link.id = "qunit-desktop-notifications-entry";
-		document.getElementById( "qunit-testrunner-toolbar" ).appendChild( link );
+		return;
 	}
+
+	/** Remove URL Config item. */
+	var urlConfigItem = document.getElementById( "qunit-urlconfig-dnp" );
+	urlConfigItem.parentNode.removeChild( urlConfigItem );
+	/** Remove URL Config label. */
+	var urlConfigLabel = document.querySelector( "label[for=\"qunit-urlconfig-dnp\"]" );
+	urlConfigLabel.parentNode.removeChild( urlConfigLabel );
+
+	/** Add new entry, containing only a link. */
+	var link = document.createElement( "a" );
+	link.innerText = "Desktop Notifications";
+	link.href = "javascript:void(0)";
+	link.id = "qunit-desktop-notifications-entry";
+	document.getElementById( "qunit-testrunner-toolbar" ).appendChild( link );
+
 };
 
 QUnitDesktopNotifications.addDomHandlers = function () {
@@ -190,6 +204,7 @@ if ( typeof window.QUnit === "undefined" ) {
 	console.error( "QUnit Desktop Notifications should be included after QUnit." );
 } else if ( self.start() === true ) {
 	QUnit.begin( function () {
+		self.prependLinkToDom();
 		self.addDomHandlers();
 		self.log.begin();
 	});

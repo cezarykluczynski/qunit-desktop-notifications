@@ -117,7 +117,7 @@ define([
 						return false;
 					};
 
-					/** Start one more. */
+					/** Validate one more time. */
 					QUnitDesktopNotifications.validateEnvironment();
 
 					return QUnitDesktopNotifications._started;
