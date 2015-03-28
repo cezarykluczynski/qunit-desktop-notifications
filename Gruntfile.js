@@ -23,7 +23,10 @@ module.exports = function (grunt) {
 	});
 
 	/** Main task for testing. */
-	grunt.registerTask( "test", "intern" );
+	grunt.registerTask( "test", function () {
+		grunt.task.run( "delete-coverage-final" );
+		grunt.task.run( "intern" );
+	});
 
 	/** Aliases for both sub-tasks. */
 	grunt.registerTask( "test:client", "intern:client" );
@@ -31,4 +34,9 @@ module.exports = function (grunt) {
 
 	/** Make "test" task the default task for "grunt" command. */
 	grunt.registerTask( "default", [ "test" ] );
+
+	/** Deletes coverage-final.json, so combined coverage will be accurate. */
+	grunt.registerTask( "delete-coverage-final", function () {
+		require( "fs" ).unlinkSync( "coverage-final.json" );
+	});
 };
