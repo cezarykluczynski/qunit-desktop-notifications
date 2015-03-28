@@ -9,6 +9,7 @@ define([
 	registerSuite({
 		name: "localStorage utility tests",
 
+		/** Check the behaviour of utils.localStorage() with parameters. */
 		"QUnitDesktopNotifications.utils.localStorage getter and setter.": function () {
 			var self = this;
 
@@ -23,6 +24,8 @@ define([
 					assert.equal( value, "value", "Correct value was set, then retrieved." );
 				});
 		},
+
+		/** Check the behaviour of utils.localStorage() without parameters passed. */
 		"QUnitDesktopNotifications.utils.localStorage with no parameters.": function () {
 			return this.remote
 				.get( url )

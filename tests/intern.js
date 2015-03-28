@@ -1,6 +1,7 @@
 define({
 	suites: [
-		"tests/unit/smoke"
+		"tests/unit/smoke",
+		"tests/unit/environment"
 	],
 	proxyPort: 9090,
 	proxyUrl: "http://localhost:9090/",
@@ -20,6 +21,7 @@ define({
 	},
 	functionalSuites: [
 		"tests/functional/register",
+		"tests/functional/initialization",
 		"tests/functional/localStorage"
 	],
 	excludeInstrumentation: /^(node_modules|bower_components|tests)/

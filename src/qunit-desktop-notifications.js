@@ -44,14 +44,7 @@ QUnitDesktopNotifications.validateEnvironment = function () {
 	}
 
 	/** Configured not to run, do nothing. */
-	if ( this.config.on === false ) {
-		return false;
-	}
-
-	/** Don't start multiple times, because QUnit handlers should be registered only once. */
-	if ( this._started ) {
-		console.warn( "QUnit Desktop Notifications should be started once." );
-
+	if ( this.config.disabled === true ) {
 		return false;
 	}
 
@@ -59,6 +52,13 @@ QUnitDesktopNotifications.validateEnvironment = function () {
 	if ( this.utils.localStorage() === false ) {
 		console.error( "This browser does not support localStorage, and QUnit Desktop Notifications won't work " +
 			"without it." );
+
+		return false;
+	}
+
+	/** Don't start multiple times, because QUnit handlers should be registered only once. */
+	if ( this._started ) {
+		console.warn( "QUnit Desktop Notifications should be started once." );
 
 		return false;
 	}
@@ -133,7 +133,7 @@ QUnitDesktopNotifications.options = function ( options ) {
 	 */
 	for ( var i in options ) {
 		if ( this.config.hasOwnProperty( i ) ) {
-			config[ i ] = this.config[ i ];
+			this.config[ i ] = options[ i ];
 		}
 	}
 };
@@ -188,13 +188,11 @@ QUnitDesktopNotifications.profiles = {
 /** In case QUnit was not found, generate error and don't initialize desktop notifications. */
 if ( typeof window.QUnit === "undefined" ) {
 	console.error( "QUnit Desktop Notifications should be included after QUnit." );
-} else {
-	if ( self.start() === true ) {
-		QUnit.begin( function () {
-			self.addDomHandlers();
-			self.log.begin();
-		});
-	}
+} else if ( self.start() === true ) {
+	QUnit.begin( function () {
+		self.addDomHandlers();
+		self.log.begin();
+	});
 }
 
 /** Expose QUnitDesktopNotification as global property. */

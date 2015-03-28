@@ -8,12 +8,12 @@ define([
 ], function ( registerSuite, assert, require, qunit ) {
 	registerSuite({
 		name: "Smoke test",
+		/** Smoke test checking if QUnitDesktopNotifications is executed without syntax errors */
 		"QUnitDesktopNotifications is created.": function () {
-			/** Smoke test checking if QUnitDesktopNotifications is executed without syntax errors */
 			assert.equal( typeof self.QUnitDesktopNotifications, "object", "OK" );
 		},
+		/** Smoke test checking kind of the same as the previous test, but with browser context. */
 		"QUnitDesktopNotifications is exposed as window property.": function () {
-			/** Smoke test checking kind of the same as the previous test, but with browser context. */
 			if ( typeof window !== "undefined" ) {
 				assert.equal( typeof window.QUnitDesktopNotifications, "object", "OK" );
 			} else {

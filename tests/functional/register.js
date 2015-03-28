@@ -22,6 +22,7 @@ define([
 					assert.strictEqual( text, "Desktop Notifications" );
 				});
 		},
+
 		/** Check if url config item is prepended to QUnit toolbar. */
 		"URL config item is added.": function () {
 			return this.remote
