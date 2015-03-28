@@ -18,6 +18,9 @@ define({
 			{ name: "tests", location: "tests/" }
 		]
 	},
-	functionalSuites: [ "tests/functional/register" ],
+	functionalSuites: [
+		"tests/functional/register",
+		"tests/functional/localStorage"
+	],
 	excludeInstrumentation: /^(node_modules|bower_components|tests)/
 });

@@ -4,11 +4,12 @@ define([
 	"require",
 	"tests/support/helper"
 ], function ( registerSuite, assert, require, testHelper ) {
-	var url = testHelper.getAppUrl( "register.html" );
+	var url = testHelper.getAppUrl( "boilerplate.html" );
 
 	registerSuite({
-		name: 'Registering within QUnit',
+		name: "Registering within QUnit.",
 
+		/** Check if link to profile configuration is added. */
 		"Entry point is added to DOM.": function () {
 			return this.remote
 				.get( url )
@@ -21,6 +22,7 @@ define([
 					assert.strictEqual( text, "Desktop Notifications" );
 				});
 		},
+		/** Check if url config item is prepended to QUnit toolbar. */
 		"URL config item is added.": function () {
 			return this.remote
 				.get( url )

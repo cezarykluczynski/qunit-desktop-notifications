@@ -15,10 +15,15 @@
     "url": "git@github.com:cezarykluczynski/qunit-desktop-notifications.git"
   },
   "ignore": [
-    "Gruntfile.js",
+    "app",
+    "bower_components",
+    "html-report",
     "node_modules",
+    "tests",
+    ".gitignore",
     "*.json",
-    "tests"
+    "Gruntfile.js",
+    "*.sublime*"
   ],
   "devDependencies": {
     "qunit": "~1.17.1"

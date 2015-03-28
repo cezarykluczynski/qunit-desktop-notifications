@@ -97,7 +97,7 @@ QUnitDesktopNotifications.addQUnitHandlers = function () {
 
 QUnitDesktopNotifications.utils.localStorage = function ( key, value ) {
 	/** Return false if local storage is not available in the browser. */
-	if ( ! 'localStorage' in window ) {
+	if ( ! this.localStorageAvailable() ) {
 		return false;
 	}
 
@@ -121,13 +121,18 @@ QUnitDesktopNotifications.utils.localStoragePrefix = function () {
 	return "qunit-desktop-notifications-";
 };
 
+/** Returns false if local storage is not available in the browser, true otherwise. */
+QUnitDesktopNotifications.utils.localStorageAvailable = function () {
+	return 'localStorage' in window;
+};
+
 QUnitDesktopNotifications.options = function ( options ) {
 	/**
 	 * Iterate over properties in default config and overwrite every property found if it's found in
 	 * QUnitDesktopNotifications config.
 	 */
 	for ( var i in options ) {
-		if ( i in this.config && this.config.hasOwnProperty( i ) ) {
+		if ( this.config.hasOwnProperty( i ) ) {
 			config[ i ] = this.config[ i ];
 		}
 	}
@@ -153,8 +158,8 @@ QUnitDesktopNotifications.prependToDom = function () {
 			label: "<a id=\"qunit-desktop-notifications-entry\" href=\"javascript:void(0)\">" +
 				"Desktop Notifications</a> profile",
 			tooltip: "Profiles can be configured when Desktop Notifications link is clicked. If no profile is " +
-				"selected, the first profile on the list is treated as default. Page reload is required for this list" +
-				"to refresh available profiles.",
+				"selected, the first profile on the list is treated as default. Page reload is required for this " +
+				"list to refresh available profiles.",
 			value: this.profiles.names()
 		});
 	} else {

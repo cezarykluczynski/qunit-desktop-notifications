@@ -9,3 +9,6 @@ npm-debug.log
 
 # Sublime project files are local
 *.sublime*
+
+# Ignore HTML reports
+html-report

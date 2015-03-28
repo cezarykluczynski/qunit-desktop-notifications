@@ -9,14 +9,14 @@ module.exports = function (grunt) {
 				options: {
 					runType: "client",
 					config: "tests/intern",
-					reporters: [ "console" ]
+					reporters: [ "combined", "html" ]
 				}
 			},
 			runner: {
 				options: {
 					runType: "runner",
 					config: "tests/intern",
-					reporters: [ "console" ]
+					reporters: [ "combined" ]
 				}
 			}
 		}
