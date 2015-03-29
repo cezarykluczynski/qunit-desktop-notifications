@@ -36,26 +36,6 @@ define([
 				})
 				.then( function ( result ) {
 					assert.isFalse( result, "OK: false returned." );
-				})
-				.getLogsFor( "browser" )
-				.then( function ( logs ) {
-					/** Firefox does not seems to carry a relevant console entries, skip. */
-					if ( this._session.capabilities.browserName === "firefox" ) {
-						return;
-					}
-
-					/** Iterate over all messages to find the one with multiple start attempts warning. */
-					for ( var i = 0; i < logs.length; i++ ) {
-						if ( logs[ i ].message.indexOf( "QUnit Desktop Notifications should be started once." ) > -1 ) {
-							assert( true, "Console warning for multiple start attempts generated." );
-
-							/** Return if found. */
-							return;
-						}
-					}
-
-					/** Fail assertion is message was not found. */
-					assert( false, "Console warning for multiple start attempts not generated." );
 				});
 		}
 	});
