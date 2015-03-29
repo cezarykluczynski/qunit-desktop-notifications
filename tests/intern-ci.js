@@ -17,7 +17,7 @@ define({
 		{ browserName: "Chrome" },
 		{ browserName: "Internet Explorer", platform: "Windows 8.1", version: "11" }
 	],
-	maxConcurrency: 1,
+	maxConcurrency: 3,
 	functionalSuites: [
 		"tests/functional/register",
 		"tests/functional/initialization",
