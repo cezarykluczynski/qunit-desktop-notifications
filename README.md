@@ -2,15 +2,19 @@ Work in progress, not yet usable.
 
 Installation
 ============
-Installation via bower:
+Installation via Bower:
 ```sh
 bower install qunit-desktop-notifications
 ```
 
+Or download [from GitHub](https://github.com/cezarykluczynski/qunit-desktop-notifications/tree/master/src).
+
 Include QUnit Desktop Notifications in you page, after QUnit:
 ```html
+<link href="path/to/qunit.css" rel="stylesheet">
 <script src="path/to/qunit.js"></script>
-<script src="bower_components/qunit-desktop-notifications/src/qunit-desktop-notifications.js"></script>
+<link href="path/to/qunit-desktop-notifications.css" rel="stylesheet">
+<script src="path/to/qunit-desktop-notifications.js"></script>
 ```
 
 Configuration
