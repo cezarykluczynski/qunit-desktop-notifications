@@ -8,9 +8,14 @@ define({
 	capabilities: {
 		"selenium-version": "2.45.0"
 	},
+	tunnel: "SauceLabsTunnel",
+	tunnelOptions: {
+		port: 4444
+	},
 	environments: [
 		{ browserName: "firefox" },
-		{ browserName: "chrome" }
+		{ browserName: "chrome" },
+		{ browserName: "interner explorer", "version": "11" }
 	],
 	maxConcurrency: 1,
 	functionalSuites: [

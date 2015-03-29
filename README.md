@@ -69,3 +69,13 @@ To run functional test using Selenium WebDriver:
 selenium-standalone start # start Selenium Server
 grunt test:runner # run tests when Selenium Server started
 ```
+
+To run all test using SauceLabs:
+```sh
+node_modules/.bin/intern-runner config=tests/intern-ci
+```
+
+Known issues
+============
+* Stop local Selenium server before running Sauce Labs tests from local machine.
+Also stop SauceLabs tests before starting local server, as both use the same port.
