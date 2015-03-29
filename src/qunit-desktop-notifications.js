@@ -27,7 +27,7 @@ QUnitDesktopNotifications.start = function () {
 		return false;
 	}
 
-	this.prependURLConfigItem();
+	this.decideURLConfigItem();
 	this.addQUnitHandlers();
 
 	return true;
@@ -134,6 +134,12 @@ QUnitDesktopNotifications.options = function ( options ) {
 	for ( var i in options ) {
 		if ( this.config.hasOwnProperty( i ) ) {
 			this.config[ i ] = options[ i ];
+
+			/** If we have to disable plugin or not prepend URL config item,
+			 *  URL config presence should be validated. */
+			if ( [ "disabled", "urlConfig" ].indexOf( i ) > -1 ) {
+				this.decideURLConfigItem();
+			}
 		}
 	}
 };
@@ -148,7 +154,19 @@ QUnitDesktopNotifications.log = {
 	testStart: function () {}
 };
 
-QUnitDesktopNotifications.prependURLConfigItem = function () {
+QUnitDesktopNotifications.decideURLConfigItem = function () {
+	var mount = this.config.disabled === false && this.config.urlConfig === true;
+
+	for ( var i = 0; i < QUnit.config.urlConfig.length; i++ ) {
+		if ( QUnit.config.urlConfig[ i ].id === "dnp" ) {
+			if ( ! mount ) {
+				QUnit.config.urlConfig.splice( i, 1 );
+			}
+
+			return;
+		}
+	}
+
 	/** Register urlConfig entry that will let switch profiles. */
 	QUnit.config.urlConfig.push({
 		/** Short for "desktop notifications profile". */
@@ -164,17 +182,10 @@ QUnitDesktopNotifications.prependURLConfigItem = function () {
 };
 
 QUnitDesktopNotifications.prependLinkToDom = function () {
-	/** Return if URL config item should be prepended. */
+	/** Return if URL config item should be left when it is, and not replaced by only a link to panel. */
 	if ( this.config.urlConfig ) {
 		return;
 	}
-
-	/** Remove URL Config item. */
-	var urlConfigItem = document.getElementById( "qunit-urlconfig-dnp" );
-	urlConfigItem.parentNode.removeChild( urlConfigItem );
-	/** Remove URL Config label. */
-	var urlConfigLabel = document.querySelector( "label[for=\"qunit-urlconfig-dnp\"]" );
-	urlConfigLabel.parentNode.removeChild( urlConfigLabel );
 
 	/** Add new entry, containing only a link. */
 	var link = document.createElement( "a" );
@@ -182,11 +193,14 @@ QUnitDesktopNotifications.prependLinkToDom = function () {
 	link.href = "javascript:void(0)";
 	link.id = "qunit-desktop-notifications-entry";
 	document.getElementById( "qunit-testrunner-toolbar" ).appendChild( link );
-
 };
 
 QUnitDesktopNotifications.addDomHandlers = function () {
 	var link = document.getElementById( "qunit-desktop-notifications-entry" );
+
+	if ( ! link ) {
+		return;
+	}
 
 	link.addEventListener( "click", function () {
 		/** @todo Open configuration panel. */

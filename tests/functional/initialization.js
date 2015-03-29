@@ -94,13 +94,22 @@ define([
 						disabled: true
 					});
 
-					/** Start one more. */
+					/** Validate one more time. */
 					QUnitDesktopNotifications.validateEnvironment();
 
 					return QUnitDesktopNotifications._started;
 				})
 				.then( function ( result ) {
 					assert.isFalse( result, "OK: QUnitDesktopNotifications._started is false." );
+				})
+				/** Start QUnit and check if panel link was not created. */
+				.execute( function () {
+					QUnit.start();
+
+					return document.getElementById( "qunit-desktop-notifications-entry" );
+				})
+				.then( function ( elem ) {
+					assert.isNull( elem, "No link to panel was created." );
 				});
 		},
 

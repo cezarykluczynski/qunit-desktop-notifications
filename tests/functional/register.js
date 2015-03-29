@@ -51,10 +51,16 @@ define([
 
 					QUnit.start();
 				})
+				/** Check if no URL item was created. */
 				.waitForDeletedById( "qunit-urlconfig-dnp" )
 				.then( function ( ) {
 					assert.ok( true, "No URL config entry created." );
-				});
+				})
+				/** Check if link to panel was created. */
+				.findById( "qunit-desktop-notifications-entry" )
+				.then( function () {
+					assert.ok( true, "Link to panel created." );
+				})
 		}
 	});
 });

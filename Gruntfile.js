@@ -37,6 +37,8 @@ module.exports = function (grunt) {
 
 	/** Deletes coverage-final.json, so combined coverage will be accurate. */
 	grunt.registerTask( "delete-coverage-final", function () {
-		require( "fs" ).unlinkSync( "coverage-final.json" );
+		try {
+			require( "fs" ).unlinkSync( "coverage-final.json" );
+		} catch ( i ) {}
 	});
 };
