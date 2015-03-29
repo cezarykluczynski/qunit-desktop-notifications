@@ -1,6 +1,5 @@
 language: node_js
 node_js:
-- '0.12'
 - '0.10'
 addons:
   sauce_connect: true
@@ -12,4 +11,4 @@ install:
   - npm install -g bower grunt-cli
   - npm install
   - bower install
-script: npm test
+script: node_modules/.bin/intern-runner config=tests/intern
