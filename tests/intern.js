@@ -9,8 +9,8 @@ define({
 		"selenium-version": "2.45.0"
 	},
 	environments: [
-		{ browserName: "firefox" },
-		{ browserName: "chrome" }
+		{ browserName: "Firefox" },
+		{ browserName: "Chrome" }
 	],
 	maxConcurrency: 1,
 	functionalSuites: [

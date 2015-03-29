@@ -6,14 +6,14 @@ Build status
 
 Installation
 ============
-Installation via Bower:
+Install via Bower:
 ```sh
 bower install qunit-desktop-notifications
 ```
 
-Or download [from GitHub](https://github.com/cezarykluczynski/qunit-desktop-notifications/tree/master/src).
+Or [download from GitHub](https://github.com/cezarykluczynski/qunit-desktop-notifications/tree/master/src).
 
-Include QUnit Desktop Notifications in you page, after QUnit:
+Include QUnit Desktop Notifications after QUnit:
 ```html
 <link href="path/to/qunit.css" rel="stylesheet">
 <script src="path/to/qunit.js"></script>
@@ -23,10 +23,10 @@ Include QUnit Desktop Notifications in you page, after QUnit:
 
 Configuration
 =============
-QUnit Desktop Notifications has to be configured before QUnit.start() is called.
-If you call QUnit.start() explicitly, just call options method of QUnit Desktop Notifications
-before you call QUnit.start(). Otherwise, configuration should be included right after
-plugin inclusion.
+QUnit Desktop Notifications has to be configured before <code>QUnit.start()</code> is called.
+If you call <code>QUnit.start()</code> explicitly, just call <code>QUnitDesktopNotifications.options()</code>
+before that. Otherwise, configuration would ideally be included right after plugin inclusion,
+and must be included before window load event, because QUnit uses it for auto start.
 
 Available configuration:
 
@@ -43,7 +43,8 @@ Profiles are a way to configure what kind of events will generate desktop notifi
 
 Development
 ===========
-If you would like to participate in development of this plugin install repository:
+If you would like to participate in development of this plugin, fork this repository,
+clone it, then install locally:
 
 ```sh
 npm install --global bower grunt-cli selenium-standalone@latest
@@ -54,11 +55,10 @@ selenium-standalone install
 
 Running tests
 =============
-Unit tests are run using Node.
+Unit tests are run using Node. Functional tests are run using local Selenium server
+or Sauce Labs VM's.
 
-Functional tests are run using local Selenium WebDriver.
-
-To run all tests:
+To run all tests using local Selenium server:
 ```sh
 grunt test
 ```
@@ -68,18 +68,19 @@ To run unit tests using Node:
 grunt test:client
 ```
 
-To run functional test using Selenium WebDriver:
+To run functional tests using local Selenium server:
 ```sh
 selenium-standalone start # start Selenium Server
 grunt test:runner # run tests when Selenium Server started
 ```
 
-To run all test using SauceLabs:
+To run all test using Sauce Labs:
 ```sh
 node_modules/.bin/intern-runner config=tests/intern-ci
 ```
+For that, Sauce Labs username and accesskey needs to be available as environment variables ([more on the subject, ignore the Karma part](https://docs.saucelabs.com/tutorials/js-unit-testing/#running-karma-with-the-karma-sauce-launcher-https-github-com-karma-runner-karma-sauce-launcher-plugin)).
 
 Known issues
 ============
 * Stop local Selenium server before running Sauce Labs tests from local machine.
-Also stop SauceLabs tests before starting local server, as both use the same port.
+Also stop or finish SauceLabs tests before starting local server, because both use the same port.
