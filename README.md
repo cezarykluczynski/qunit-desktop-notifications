@@ -1,5 +1,9 @@
 Work in progress, not yet usable.
 
+Build status
+============
+[![Sauce Test Status](https://saucelabs.com/browser-matrix/qunit-dn.svg)](https://saucelabs.com/u/qunit-dn)
+
 Installation
 ============
 Installation via Bower:
