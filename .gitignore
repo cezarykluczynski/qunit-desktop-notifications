@@ -13,5 +13,6 @@ npm-debug.log
 # Ignore HTML reports
 html-report
 
-# Ignore marged coverage reports
+# Ignore coverage reports
 coverage-final.json
+lcov.info

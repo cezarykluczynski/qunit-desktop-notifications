@@ -2,6 +2,9 @@ module.exports = function (grunt) {
 	/** Load built-in grunt task from intern. */
 	grunt.loadNpmTasks( "intern" );
 
+	/** Load task for uploading coverage reports to coveralls.io. */
+	grunt.loadNpmTasks( "grunt-coveralls" );
+
 	grunt.initConfig({
 		/** Intern config: one sub-task for client unit tests and one sub-task for functional tests. */
 		intern: {
@@ -9,22 +12,28 @@ module.exports = function (grunt) {
 				options: {
 					runType: "client",
 					config: "tests/intern",
-					reporters: [ "combined" ]
+					reporters: [ "combined", "lcov" ]
 				}
 			},
 			runner: {
 				options: {
 					runType: "runner",
 					config: "tests/intern",
-					reporters: [ "combined" ]
+					reporters: [ "combined", "lcov" ]
 				}
+			}
+		},
+		coveralls: {
+			options: {
+				src: "lcov.info",
+				force: false
 			}
 		}
 	});
 
-	/** Main task for testing. */
+	/** Main task for local testing. */
 	grunt.registerTask( "test", function () {
-		grunt.task.run( "delete-coverage-final" );
+		grunt.task.run( "delete-coverage-reports" );
 		grunt.task.run( "intern" );
 	});
 
@@ -36,9 +45,12 @@ module.exports = function (grunt) {
 	grunt.registerTask( "default", [ "test" ] );
 
 	/** Deletes coverage-final.json, so combined coverage will be accurate. */
-	grunt.registerTask( "delete-coverage-final", function () {
+	grunt.registerTask( "delete-coverage-reports", function () {
 		try {
 			require( "fs" ).unlinkSync( "coverage-final.json" );
+		} catch ( i ) {}
+		try {
+			require( "fs" ).unlinkSync( "lcov.info" );
 		} catch ( i ) {}
 	});
 };
