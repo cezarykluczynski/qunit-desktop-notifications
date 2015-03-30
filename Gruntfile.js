@@ -53,4 +53,8 @@ module.exports = function (grunt) {
 			require( "fs" ).unlinkSync( "lcov.info" );
 		} catch ( i ) {}
 	});
+
+	grunt.registerTask( "list-root-dir", function () {
+		console.log( require( "fs" ).readdirSync( "." ) );
+	});
 };
