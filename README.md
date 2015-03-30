@@ -4,6 +4,8 @@ Build status
 ============
 [![Sauce Test Status](https://saucelabs.com/browser-matrix/qunit-dn.svg)](https://saucelabs.com/u/qunit-dn)
 
+[![Coverage Status](https://coveralls.io/repos/cezarykluczynski/qunit-desktop-notifications/badge.svg)](https://coveralls.io/r/cezarykluczynski/qunit-desktop-notifications)
+
 Installation
 ============
 Install via Bower:
@@ -84,3 +86,4 @@ Known issues
 ============
 * Stop local Selenium server before running Sauce Labs tests from local machine.
 Also stop or finish SauceLabs tests before starting local server, because both use the same port.
+* Running <code>grunt coveralls:all</code> can cause BSOD on Windows 7.

@@ -14,4 +14,4 @@ before_script:
 - npm install
 - bower install
 script: node_modules/.bin/intern-runner config=tests/intern-ci
-after_success: grunt coveralls
+after_success: grunt coveralls:all --verbose
