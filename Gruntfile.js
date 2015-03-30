@@ -25,8 +25,8 @@ module.exports = function (grunt) {
 		},
 		coveralls: {
 			all: {
-				src: "lcov.info",
-				force: false
+				src: "./lcov.info",
+				force: true
 			}
 		}
 	});
