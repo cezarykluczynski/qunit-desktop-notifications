@@ -14,4 +14,4 @@ before_script:
 - npm install
 - bower install
 script: grunt test-ci
-after_success: coveralls:all
+after_success: grunt coveralls:all
