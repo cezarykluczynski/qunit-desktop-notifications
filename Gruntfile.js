@@ -66,7 +66,6 @@ module.exports = function (grunt) {
 
 		grunt.task.run( "intern:client-ci" );
 		grunt.task.run( "intern:runner-ci" );
-		grunt.task.run( "coveralls:all" );
 	});
 
 	/** Aliases for both sub-tasks. */
