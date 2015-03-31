@@ -8,24 +8,42 @@ module.exports = function (grunt) {
 	grunt.initConfig({
 		/** Intern config: one sub-task for client unit tests and one sub-task for functional tests. */
 		intern: {
+			/** Local unit tests config. */
 			client: {
 				options: {
 					runType: "client",
 					config: "tests/intern",
-					reporters: [ "combined", "lcov" ]
+					reporters: [ "combined" ]
 				}
 			},
+			/** Local functional tests config. */
 			runner: {
 				options: {
 					runType: "runner",
 					config: "tests/intern",
-					reporters: [ "combined", "lcov" ]
+					reporters: [ "combined" ]
+				}
+			},
+			/** CI unit tests config. */
+			"client-ci": {
+				options: {
+					runType: "client",
+					config: "tests/intern-ci",
+					reporters: [ "lcov" ]
+				}
+			},
+			/** CI functional tests config. */
+			"runner-ci": {
+				options: {
+					runType: "runner",
+					config: "tests/intern-ci",
+					reporters: [ "lcov" ]
 				}
 			}
 		},
 		coveralls: {
 			all: {
-				src: "./lcov.info",
+				src: "lcov.info",
 				force: true
 			}
 		}
@@ -35,6 +53,20 @@ module.exports = function (grunt) {
 	grunt.registerTask( "test", function () {
 		grunt.task.run( "delete-coverage-reports" );
 		grunt.task.run( "intern" );
+	});
+
+	/** Main task for Travis. */
+	grunt.registerTask( "test-ci", function () {
+		/** Don't run this task outside of CI! */
+		if ( ! process.env.TRAVIS ) {
+			console.error( "This task should only be run by Travis." );
+
+			return;
+		}
+
+		grunt.task.run( "intern:client-ci" );
+		grunt.task.run( "intern:runner-ci" );
+		grunt.task.run( "coveralls:all" );
 	});
 
 	/** Aliases for both sub-tasks. */
@@ -52,9 +84,5 @@ module.exports = function (grunt) {
 		try {
 			require( "fs" ).unlinkSync( "lcov.info" );
 		} catch ( i ) {}
-	});
-
-	grunt.registerTask( "list-root-dir", function () {
-		console.log( require( "fs" ).readdirSync( "." ) );
 	});
 };
