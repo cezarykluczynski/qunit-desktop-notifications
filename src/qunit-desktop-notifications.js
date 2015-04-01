@@ -29,6 +29,7 @@ QUnitDesktopNotifications.start = function () {
 		return false;
 	}
 
+	this.profiles.init();
 	this.decideURLConfigItem();
 	this.addQUnitHandlers();
 
@@ -185,7 +186,7 @@ QUnitDesktopNotifications.decideURLConfigItem = function () {
 		tooltip: "Profiles can be configured when Desktop Notifications link is clicked. If no profile is " +
 			"selected, the first profile on the list is treated as default. Page reload is required for this " +
 			"list to refresh available profiles.",
-		value: this.profiles.names()
+		value: this.profiles.getNames()
 	});
 };
 
@@ -212,56 +213,137 @@ QUnitDesktopNotifications.addDomHandlers = function () {
 
 	/** Add handler, for when the link is clicked, desktop notifications config panel should toggle. */
 	this.$entry.addEventListener( "click", function () {
-		QUnitDesktopNotifications.togglePanel();
+		QUnitDesktopNotifications.panel.toggle();
 	});
 };
 
-/** Shows or hides panel. */
-QUnitDesktopNotifications.togglePanel = function () {
-	if ( this.$panel === null ) {
-		this.createPanel();
-	}
-
-	var display = this.$panel.style.display === "none" ? "block" : "none";
-
-	/** Show panel if it's hidden, hide panel is it's shown. */
-	this.$panel.style.display = display;
-
-	if ( display === "block" ) {
-		this.setPanelPosition();
-	}
-};
+QUnitDesktopNotifications.panel = {};
 
 /** One time panel creation, called on first click. */
-QUnitDesktopNotifications.createPanel = function () {
+QUnitDesktopNotifications.panel.create = function () {
 	/** Create panel wrapper, add a class, and an ID. */
-	this.$panel = document.createElement( "div" );
-	this.$panel.setAttribute( "id", "qunit-desktop-notifications-panel" );
+	self.$panel = document.createElement( "div" );
+	self.$panel.setAttribute( "id", "qunit-desktop-notifications-panel" );
 
 	/** Add wrapper to DOM. */
-	document.body.appendChild( this.$panel );
+	document.body.appendChild( self.$panel );
 
-	/** Set display to none, this.togglePanel() will set it to block. */
-	this.$panel.style.display = "none";
+	/** Set display to none, self.panel.toggle() will set it to block. */
+	self.$panel.style.display = "none";
+};
+
+/** Shows or hides panel. */
+QUnitDesktopNotifications.panel.toggle = function () {
+	if ( self.$panel === null ) {
+		self.panel.create();
+	}
+
+	var display = self.$panel.style.display === "none" ? "block" : "none";
+
+	/** Show panel if it's hidden, hide panel is it's shown. */
+	self.$panel.style.display = display;
+
+	if ( display === "block" ) {
+		self.panel.setPosition();
+		self.profiles.refreshAll();
+	}
 };
 
 /** Panel positioning, called each time panel is being shown. */
-QUnitDesktopNotifications.setPanelPosition = function () {
+QUnitDesktopNotifications.panel.setPosition = function () {
 	/** Get position of entry link. */
-	var left = this.$entry.offsetLeft;
-	var top = this.$entry.offsetTop;
+	var left = self.$entry.offsetLeft;
+	var top = self.$entry.offsetTop;
 
 	/** Get height of entry link. */
-	var height = parseInt( getComputedStyle( this.$entry ).height, 10 );
+	var height = parseInt( getComputedStyle( self.$entry ).height, 10 );
 
 	/** Position panel relative to entry link: a full height lower and a full height to the left. */
-	this.$panel.style.left = "" + ( left - height ) + "px";
-	this.$panel.style.top = "" + ( top + height ) + "px";
+	self.$panel.style.left = "" + ( left - height ) + "px";
+	self.$panel.style.top = "" + ( top + height ) + "px";
 };
 
-QUnitDesktopNotifications.profiles = {
-	names: function () {
-		return  [ "default" ];
+QUnitDesktopNotifications.profiles = {};
+QUnitDesktopNotifications.profiles.profiles = {};
+
+QUnitDesktopNotifications.profiles.init = function () {
+	this.refresh();
+
+	/** Push default profile, if it's not there already. */
+	if ( ! this.profiles.hasOwnProperty( "default" ) ) {
+		this.profile( "default", {
+			done: true
+		});
+	}
+
+	/** Push silent profile, if it's not there already. */
+	if ( ! this.profiles.hasOwnProperty( "silent" ) ) {
+		this.profile( "silent", {} );
+	}
+};
+
+QUnitDesktopNotifications.profiles.refresh = function () {
+	this.profiles = JSON.parse( self.utils.localStorage( "profiles" ) ) || {};
+};
+
+QUnitDesktopNotifications.profiles.refreshAll = function () {
+	/** All profiles names. */
+	var names = this.getNames();
+
+	/** Get either the existing select, or create a new one. */
+	var $select = self.$select || document.createElement( "select" );
+
+	/** Remove all children. */
+	while ( $select.firstChild ) {
+		$select.removeChild( $select.firstChild );
+	}
+
+	var $option;
+
+	for ( var i = 0; i < names.length; i++ ) {
+		$option = document.createElement( "option" );
+		$option.setAttribute( "name", names[ i ] );
+		$option.text = names[ i ];
+
+		$select.appendChild( $option );
+	}
+
+	self.$select = $select;
+
+	self.$panel.appendChild( $select );
+};
+
+/** Return all profiles names. */
+QUnitDesktopNotifications.profiles.getNames = function () {
+	return Object.keys( this.profiles );
+};
+
+QUnitDesktopNotifications.profiles.profile = function ( name, values ) {
+	/** Go over existing profiles. */
+	for ( var i in this.profiles ) {
+		if ( this.profiles.hasOwnProperty( i ) && i === name ) {
+			/** If profile was found and second argument is mossing, act as a getter. */
+			if ( arguments.length === 1 ) {
+				return this.profiles[ i ];
+			}
+
+			/** If profile was found and second argument is present, act as a setter or,
+			 *  in case of second argument being a null, a delete command. */
+			if ( arguments.length === 2 ) {
+				if ( values === null ) {
+					delete this.profiles[ i ];
+				} else {
+					this.profiles[ i ] = values;
+				}
+
+				return;
+			}
+		}
+	}
+
+	/** Act as a getter if two argument were passed and profile name wasn't find earlier. */
+	if ( arguments.length === 2 && values !== null ) {
+		this.profiles[ name ] = values;
 	}
 };
 

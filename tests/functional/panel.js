@@ -42,7 +42,7 @@ define([
 
 			return this.remote
 				.get( boilerplate )
-				.setFindTimeout( 3000 )
+				.setFindTimeout( 1000 )
 				/** Check if $panel property is null at first. */
 				.execute( function () {
 					return QUnitDesktopNotifications.$panel;

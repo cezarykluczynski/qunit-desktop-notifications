@@ -1,7 +1,8 @@
 define({
 	suites: [
 		"tests/unit/smoke",
-		"tests/unit/environment"
+		"tests/unit/environment",
+		"tests/unit/profile"
 	],
 	proxyPort: 9090,
 	proxyUrl: "http://localhost:9090/",
