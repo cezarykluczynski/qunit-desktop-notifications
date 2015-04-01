@@ -4,17 +4,17 @@ define([
 	"require",
 	"tests/support/helper"
 ], function ( registerSuite, assert, require, testHelper ) {
-	var url = testHelper.getAppUrl( "boilerplate.html" );
+	var boilerplate = testHelper.getAppUrl( "boilerplate.html" );
 
 	registerSuite({
-		name: "localStorage utility tests",
+		name: "localStorage utility",
 
 		/** Check the behaviour of utils.localStorage() with parameters. */
 		"QUnitDesktopNotifications.utils.localStorage getter and setter.": function () {
 			var self = this;
 
 			return this.remote
-				.get( url )
+				.get( boilerplate )
 				/** Check if getter and setter works. */
 				.execute( function () {
 					QUnitDesktopNotifications.utils.localStorage( "key", "value" );
@@ -28,7 +28,7 @@ define([
 		/** Check the behaviour of utils.localStorage() without parameters passed. */
 		"QUnitDesktopNotifications.utils.localStorage with no parameters.": function () {
 			return this.remote
-				.get( url )
+				.get( boilerplate )
 				/** Check if utils.localStorage() withour params returns true. */
 				.execute( function () {
 					return QUnitDesktopNotifications.utils.localStorage();

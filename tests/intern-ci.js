@@ -21,7 +21,8 @@ define({
 	functionalSuites: [
 		"tests/functional/register",
 		"tests/functional/initialization",
-		"tests/functional/localStorage"
+		"tests/functional/localStorage",
+		"tests/functional/panel"
 	],
 	excludeInstrumentation: /^(node_modules|bower_components|tests)/
 });

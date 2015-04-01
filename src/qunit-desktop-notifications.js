@@ -15,6 +15,8 @@ var self, QUnitDesktopNotifications;
 self = QUnitDesktopNotifications = {
 	_started: false,
 	utils: {},
+	$entry: null,
+	$panel: null,
 	config: {
 		urlConfig: true,
 		disabled: false
@@ -69,6 +71,7 @@ QUnitDesktopNotifications.validateEnvironment = function () {
 	return true;
 }
 
+/** Adds handlers for all QUnit event. */
 QUnitDesktopNotifications.addQUnitHandlers = function () {
 	QUnit.done( function () {
 		self.log.done();
@@ -95,6 +98,7 @@ QUnitDesktopNotifications.addQUnitHandlers = function () {
 	});
 }
 
+/** Local storage utility: getter, setter and detector. */
 QUnitDesktopNotifications.utils.localStorage = function ( key, value ) {
 	/** Return false if local storage is not available in the browser. */
 	if ( ! this.localStorageAvailable() ) {
@@ -154,11 +158,15 @@ QUnitDesktopNotifications.log = {
 	testStart: function () {}
 };
 
+/** First minute or last minute change of URL item presence. */
 QUnitDesktopNotifications.decideURLConfigItem = function () {
+	/** Whether to mount or dismount URL item from QUnit. */
 	var mount = this.config.disabled === false && this.config.urlConfig === true;
 
+	/* Try to find URL item among existing items. */
 	for ( var i = 0; i < QUnit.config.urlConfig.length; i++ ) {
 		if ( QUnit.config.urlConfig[ i ].id === "dnp" ) {
+			/** If item was found and it should not be there, remove it. */
 			if ( ! mount ) {
 				QUnit.config.urlConfig.splice( i, 1 );
 			}
@@ -196,15 +204,59 @@ QUnitDesktopNotifications.prependLinkToDom = function () {
 };
 
 QUnitDesktopNotifications.addDomHandlers = function () {
-	var link = document.getElementById( "qunit-desktop-notifications-entry" );
+	this.$entry = document.getElementById( "qunit-desktop-notifications-entry" );
 
-	if ( ! link ) {
+	if ( ! this.$entry ) {
 		return;
 	}
 
-	link.addEventListener( "click", function () {
-		/** @todo Open configuration panel. */
+	/** Add handler, for when the link is clicked, desktop notifications config panel should toggle. */
+	this.$entry.addEventListener( "click", function () {
+		QUnitDesktopNotifications.togglePanel();
 	});
+};
+
+/** Shows or hides panel. */
+QUnitDesktopNotifications.togglePanel = function () {
+	if ( this.$panel === null ) {
+		this.createPanel();
+	}
+
+	var display = this.$panel.style.display === "none" ? "block" : "none";
+
+	/** Show panel if it's hidden, hide panel is it's shown. */
+	this.$panel.style.display = display;
+
+	if ( display === "block" ) {
+		this.setPanelPosition();
+	}
+};
+
+/** One time panel creation, called on first click. */
+QUnitDesktopNotifications.createPanel = function () {
+	/** Create panel wrapper, add a class, and an ID. */
+	this.$panel = document.createElement( "div" );
+	this.$panel.setAttribute( "id", "qunit-desktop-notifications-panel" );
+
+	/** Add wrapper to DOM. */
+	document.body.appendChild( this.$panel );
+
+	/** Set display to none, this.togglePanel() will set it to block. */
+	this.$panel.style.display = "none";
+};
+
+/** Panel positioning, called each time panel is being shown. */
+QUnitDesktopNotifications.setPanelPosition = function () {
+	/** Get position of entry link. */
+	var left = this.$entry.offsetLeft;
+	var top = this.$entry.offsetTop;
+
+	/** Get height of entry link. */
+	var height = parseInt( getComputedStyle( this.$entry ).height, 10 );
+
+	/** Position panel relative to entry link: a full height lower and a full height to the left. */
+	this.$panel.style.left = "" + ( left - height ) + "px";
+	this.$panel.style.top = "" + ( top + height ) + "px";
 };
 
 QUnitDesktopNotifications.profiles = {

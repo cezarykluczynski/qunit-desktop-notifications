@@ -8,15 +8,17 @@ define({
 	capabilities: {
 		"selenium-version": "2.45.0"
 	},
+	/** "Chrome", nor "Firefox", won't work here. */
 	environments: [
-		{ browserName: "Firefox" },
-		{ browserName: "Chrome" }
+		{ browserName: "firefox" },
+		{ browserName: "chrome" }
 	],
 	maxConcurrency: 1,
 	functionalSuites: [
 		"tests/functional/register",
 		"tests/functional/initialization",
-		"tests/functional/localStorage"
+		"tests/functional/localStorage",
+		"tests/functional/panel"
 	],
 	excludeInstrumentation: /^(node_modules|bower_components|tests)/
 });

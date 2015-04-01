@@ -8,7 +8,7 @@ define([
 	var stopped = testHelper.getAppUrl( "stopped.html" );
 
 	registerSuite({
-		name: "Registering within QUnit.",
+		name: "Registering within QUnit",
 
 		/** Check if link to profile configuration is added. */
 		"Entry point is added to DOM.": function () {

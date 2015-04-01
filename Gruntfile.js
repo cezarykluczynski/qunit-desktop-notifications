@@ -52,7 +52,8 @@ module.exports = function (grunt) {
 	/** Main task for local testing. */
 	grunt.registerTask( "test", function () {
 		grunt.task.run( "delete-coverage-reports" );
-		grunt.task.run( "intern" );
+		grunt.task.run( "intern:client" );
+		grunt.task.run( "intern:runner" );
 	});
 
 	/** Main task for Travis. */
