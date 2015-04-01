@@ -55,6 +55,13 @@ define([
 				done: true,
 				start: true
 			}, "OK" );
+		},
+
+		/** Test delete behaviour for existing value. */
+		"QUnitDesktopNotifications.profiles.profile(): delete behaviour, existing value.": function () {
+			self.QUnitDesktopNotifications.profiles.profile( "default", null );
+
+			assert.strictEqual( self.QUnitDesktopNotifications.profiles.profile( "default" ), null, "OK" );
 		}
 	});
 });

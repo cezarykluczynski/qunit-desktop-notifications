@@ -344,6 +344,8 @@ QUnitDesktopNotifications.profiles.profile = function ( name, values ) {
 	/** Act as a getter if two argument were passed and profile name wasn't find earlier. */
 	if ( arguments.length === 2 && values !== null ) {
 		this.profiles[ name ] = values;
+	} else if ( arguments.length === 1 ) {
+		return null;
 	}
 };
 
