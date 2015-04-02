@@ -96,7 +96,6 @@ define([
 				.findById( "qunit-desktop-notifications-entry" )
 					.click()
 					.end()
-				.setFindTimeout( 100 )
 				/** Find panel entry and click it. */
 				.findById( "qunit-desktop-notifications-panel" )
 					/** Check profiles select visibility. */
@@ -106,17 +105,18 @@ define([
 						assert.ok( visible, "Select is visible." );
 					})
 					.end()
-					/** Check profiles label visibility. */
-					.findByTagName( "label" )
-					.then( function ( visible ) {
-						assert.ok( visible, "Label is visible." );
-					})
-					.end()
 					/** Check buttons wrapper visibility. */
-					.findAllByCssSelector( ".buttons-wrapper" )
+					.findByCssSelector( ".buttons-wrapper" )
 					.isDisplayed()
 					.then( function ( visible ) {
 						assert.ok( visible, "Buttons wrapper is visible." );
+					})
+					.end()
+					/** Check profiles label visibility. */
+					.findByTagName( "label" )
+					.isDisplayed()
+					.then( function ( visible ) {
+						assert.ok( visible, "Label is visible." );
 					})
 					.end()
 				.end();

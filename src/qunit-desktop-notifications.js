@@ -335,7 +335,7 @@ QUnitDesktopNotifications.profiles.refreshSelect = function () {
 QUnitDesktopNotifications.profiles.refreshLabels = function () {
 	if ( ! self.$profilesLabel ) {
 		self.$profilesLabel = document.createElement( "label" );
-		self.$profilesLabel.innerText = "Choose profile:";
+		self.$profilesLabel.innerHTML = "Choose profile:";
 	}
 
 	self.$panel.appendChild( self.$profilesLabel );
@@ -350,17 +350,17 @@ QUnitDesktopNotifications.profiles.refreshButtons = function () {
 
 		/** Create "Save" button, add label, and class. */
 		self.$save = document.createElement( "button" );
-		self.$save.innerText = "Save";
+		self.$save.innerHTML = "Save";
 		self.$save.className = "button-save edit";
 
 		/** Create "Edit button, add label, and class. */
 		self.$edit = document.createElement( "button" );
-		self.$edit.innerText = "Edit";
+		self.$edit.innerHTML = "Edit";
 		self.$edit.className = "button-edit preview";
 
 		/** Create "Cancel" button, add label, and class. */
 		self.$cancel = document.createElement( "button" );
-		self.$cancel.innerText = "Cancel";
+		self.$cancel.innerHTML = "Cancel";
 		self.$cancel.className = "button-cancel edit";
 
 		/** Insert buttons into wrapper. */
