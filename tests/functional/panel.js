@@ -15,7 +15,7 @@ define([
 
 			return this.remote
 				.get( boilerplate )
-				.setFindTimeout( 3000 )
+				.setFindTimeout( 1000 )
 				/** Check if $panel property is null at first. */
 				.execute( function () {
 					return QUnitDesktopNotifications.$panel;
@@ -83,6 +83,43 @@ define([
 						assert.ok( visible, "Panel is visible after third click on entry link." );
 					})
 					.end();
+		},
+
+		/** Check if the panel is created on first click on "Desktop Notifications" link. */
+		"Panel has all the initial elements.": function () {
+			var self = this;
+
+			return this.remote
+				.get( boilerplate )
+				.setFindTimeout( 1000 )
+				/** Open panel by clicking entry. */
+				.findById( "qunit-desktop-notifications-entry" )
+					.click()
+					.end()
+				.setFindTimeout( 100 )
+				/** Find panel entry and click it. */
+				.findById( "qunit-desktop-notifications-panel" )
+					/** Check profiles select visibility. */
+					.findByTagName( "select" )
+					.isDisplayed()
+					.then( function ( visible ) {
+						assert.ok( visible, "Select is visible." );
+					})
+					.end()
+					/** Check profiles label visibility. */
+					.findByTagName( "label" )
+					.then( function ( visible ) {
+						assert.ok( visible, "Label is visible." );
+					})
+					.end()
+					/** Check buttons wrapper visibility. */
+					.findAllByCssSelector( ".buttons-wrapper" )
+					.isDisplayed()
+					.then( function ( visible ) {
+						assert.ok( visible, "Buttons wrapper is visible." );
+					})
+					.end()
+				.end();
 		}
 	});
 });

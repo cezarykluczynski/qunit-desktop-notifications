@@ -17,6 +17,11 @@ self = QUnitDesktopNotifications = {
 	utils: {},
 	$entry: null,
 	$panel: null,
+	$save: null,
+	$cancel: null,
+	$select: null,
+	$profilesLabel: null,
+	$buttonsWrapper: null,
 	config: {
 		urlConfig: true,
 		disabled: false
@@ -224,6 +229,7 @@ QUnitDesktopNotifications.panel.create = function () {
 	/** Create panel wrapper, add a class, and an ID. */
 	self.$panel = document.createElement( "div" );
 	self.$panel.setAttribute( "id", "qunit-desktop-notifications-panel" );
+	self.$panel.className = "preview";
 
 	/** Add wrapper to DOM. */
 	document.body.appendChild( self.$panel );
@@ -236,6 +242,7 @@ QUnitDesktopNotifications.panel.create = function () {
 QUnitDesktopNotifications.panel.toggle = function () {
 	if ( self.$panel === null ) {
 		self.panel.create();
+		self.profiles.refreshVisible();
 	}
 
 	var display = self.$panel.style.display === "none" ? "block" : "none";
@@ -245,7 +252,6 @@ QUnitDesktopNotifications.panel.toggle = function () {
 
 	if ( display === "block" ) {
 		self.panel.setPosition();
-		self.profiles.refreshAll();
 	}
 };
 
@@ -280,13 +286,24 @@ QUnitDesktopNotifications.profiles.init = function () {
 	if ( ! this.profiles.hasOwnProperty( "silent" ) ) {
 		this.profile( "silent", {} );
 	}
+
+	if ( typeof this[ "default" ] !== "string" ) {
+		this[ "default" ] = "default";
+	}
 };
 
 QUnitDesktopNotifications.profiles.refresh = function () {
 	this.profiles = JSON.parse( self.utils.localStorage( "profiles" ) ) || {};
+	this[ "default" ] = self.utils.localStorage( "default" );
 };
 
-QUnitDesktopNotifications.profiles.refreshAll = function () {
+QUnitDesktopNotifications.profiles.refreshVisible = function () {
+	this.refreshLabels();
+	this.refreshSelect();
+	this.refreshButtons();
+}
+
+QUnitDesktopNotifications.profiles.refreshSelect = function () {
 	/** All profiles names. */
 	var names = this.getNames();
 
@@ -298,12 +315,14 @@ QUnitDesktopNotifications.profiles.refreshAll = function () {
 		$select.removeChild( $select.firstChild );
 	}
 
-	var $option;
+	var $option, name;
 
+	/** Load profiles to select. */
 	for ( var i = 0; i < names.length; i++ ) {
+		name = names[ i ];
 		$option = document.createElement( "option" );
-		$option.setAttribute( "name", names[ i ] );
-		$option.text = names[ i ];
+		$option.setAttribute( "name", name );
+		$option.text = name + ( this[ "default" ] === name ? " (Default profile)" : "" );
 
 		$select.appendChild( $option );
 	}
@@ -311,6 +330,47 @@ QUnitDesktopNotifications.profiles.refreshAll = function () {
 	self.$select = $select;
 
 	self.$panel.appendChild( $select );
+};
+
+QUnitDesktopNotifications.profiles.refreshLabels = function () {
+	if ( ! self.$profilesLabel ) {
+		self.$profilesLabel = document.createElement( "label" );
+		self.$profilesLabel.innerText = "Choose profile:";
+	}
+
+	self.$panel.appendChild( self.$profilesLabel );
+};
+
+/** Adds buttons to panel. */
+QUnitDesktopNotifications.profiles.refreshButtons = function () {
+	if ( ! self.$buttonsWrapper ) {
+		/** Create buttons wrapper, and add class. */
+		self.$buttonsWrapper = document.createElement( "div" );
+		self.$buttonsWrapper.className = "buttons-wrapper";
+
+		/** Create "Save" button, add label, and class. */
+		self.$save = document.createElement( "button" );
+		self.$save.innerText = "Save";
+		self.$save.className = "button-save edit";
+
+		/** Create "Edit button, add label, and class. */
+		self.$edit = document.createElement( "button" );
+		self.$edit.innerText = "Edit";
+		self.$edit.className = "button-edit preview";
+
+		/** Create "Cancel" button, add label, and class. */
+		self.$cancel = document.createElement( "button" );
+		self.$cancel.innerText = "Cancel";
+		self.$cancel.className = "button-cancel edit";
+
+		/** Insert buttons into wrapper. */
+		self.$buttonsWrapper.appendChild( self.$save );
+		self.$buttonsWrapper.appendChild( self.$edit );
+		self.$buttonsWrapper.appendChild( self.$cancel );
+	}
+
+	/** Insert wrapper into panel. */
+	self.$panel.appendChild( self.$buttonsWrapper );
 };
 
 /** Return all profiles names. */
