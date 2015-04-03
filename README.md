@@ -2,7 +2,9 @@ Work in progress, not yet usable.
 
 Build status
 ============
-[![Sauce Test Status](https://saucelabs.com/browser-matrix/qunit-dn.svg)](https://saucelabs.com/u/qunit-dn)
+[![Build Status](https://travis-ci.org/cezarykluczynski/qunit-desktop-notifications.svg?branch=master)](https://travis-ci.org/cezarykluczynski/qunit-desktop-notifications)
+
+[![Sauce Test Status](https://saucelabs.com/buildstatus/qunit-dn)](https://saucelabs.com/u/qunit-dn)
 
 [![Coverage Status](https://coveralls.io/repos/cezarykluczynski/qunit-desktop-notifications/badge.svg)](https://coveralls.io/r/cezarykluczynski/qunit-desktop-notifications)
 
@@ -78,7 +80,7 @@ grunt test:runner # run tests when Selenium Server started
 
 To run all test using Sauce Labs:
 ```sh
-node_modules/.bin/intern-runner config=tests/intern-ci
+grunt intern:runner-ci
 ```
 For that, Sauce Labs username and accesskey needs to be available as environment variables ([more on the subject, ignore the Karma part](https://docs.saucelabs.com/tutorials/js-unit-testing/#running-karma-with-the-karma-sauce-launcher-https-github-com-karma-runner-karma-sauce-launcher-plugin)).
 
