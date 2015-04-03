@@ -29,6 +29,28 @@
 		margin-bottom: .4em;
 	}
 
+	#qunit-desktop-notifications-panel .events-wrapper {
+		margin: 0;
+		padding: 0;
+		list-style-type: none;
+		display: none;
+	}
+
+	#qunit-desktop-notifications-panel.edit .events-wrapper {
+		display: block;
+	}
+
+		#qunit-desktop-notifications-panel .events-wrapper li:first-child {
+			font-size: 13px;
+			margin-bottom: .4em;
+			padding-left: .2em;
+		}
+
+			#qunit-desktop-notifications-panel .events-wrapper li input,
+			#qunit-desktop-notifications-panel .events-wrapper li label {
+				cursor: pointer;
+			}
+
 	#qunit-desktop-notifications-panel .buttons-wrapper {
 		text-align: right;
 	}

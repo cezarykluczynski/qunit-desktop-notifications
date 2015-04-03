@@ -20,8 +20,10 @@ self = QUnitDesktopNotifications = {
 	$save: null,
 	$cancel: null,
 	$select: null,
+	$delete: null,
 	$profilesLabel: null,
 	$buttonsWrapper: null,
+	$list: null,
 	config: {
 		urlConfig: true,
 		disabled: false
@@ -300,6 +302,7 @@ QUnitDesktopNotifications.profiles.refresh = function () {
 QUnitDesktopNotifications.profiles.refreshVisible = function () {
 	this.refreshLabels();
 	this.refreshSelect();
+	this.refreshConfig();
 	this.refreshButtons();
 }
 
@@ -341,32 +344,95 @@ QUnitDesktopNotifications.profiles.refreshLabels = function () {
 	self.$panel.appendChild( self.$profilesLabel );
 };
 
+/** Create HTML for profile config. */
+QUnitDesktopNotifications.profiles.refreshConfig = function () {
+	/** List of QUnit events names. */
+	var keys = Object.keys( self.log );
+
+	/** Declare variable early. */
+	var $item, $checkbox, $label, eventName, checkboxName;
+
+	/** Create wrapper. */
+	self.$list = document.createElement( "ul" );
+	self.$list.className = "events-wrapper";
+
+	/** Create a item describing that's the deal with the list, and add it to wrapper. */
+	$item = document.createElement( "li" );
+	$item.innerHTML = "Notify on those QUnit events:";
+	self.$list.appendChild( $item );
+
+	/** Go over all QUnit events names. */
+	for ( var i = 0; i < keys.length; i++ ) {
+		eventName =  keys[ i ];
+		checkboxName = "qunit-dn-checkbox-" + eventName;
+
+		/** Create list item. */
+		$item = document.createElement( "li" );
+
+		/** Create checkbox. */
+		$checkbox = document.createElement( "input" );
+		$checkbox.setAttribute( "type", "checkbox" );
+		$checkbox.setAttribute( "id", checkboxName );
+
+		/** Create label for checkbox. */
+		$label = document.createElement( "label" );
+		$label.innerHTML = eventName;
+		$label.setAttribute( "for", checkboxName );
+
+		/** Insert checkbox and label into list item. */
+		$item.appendChild( $checkbox );
+		$item.appendChild( $label );
+
+		/** Insert list item into wrapper. */
+		self.$list.appendChild( $item );
+	}
+
+	/** Insert wrapper into panel. */
+	self.$panel.appendChild( self.$list );
+};
+
 /** Adds buttons to panel. */
 QUnitDesktopNotifications.profiles.refreshButtons = function () {
+	var profiles = this;
+
 	if ( ! self.$buttonsWrapper ) {
 		/** Create buttons wrapper, and add class. */
 		self.$buttonsWrapper = document.createElement( "div" );
 		self.$buttonsWrapper.className = "buttons-wrapper";
+
+		/** Create "Edit" button, add label, and class. */
+		self.$edit = document.createElement( "button" );
+		self.$edit.innerHTML = "Edit";
+		self.$edit.className = "button-edit preview";
+
+		self.$edit.addEventListener( "click", function () {
+			profiles.edit();
+		});
+
+		/** Create "Delete" button, add label, and class. */
+		self.$delete = document.createElement( "button" );
+		self.$delete.innerHTML = "Delete";
+		self.$delete.className = "button-delete preview";
 
 		/** Create "Save" button, add label, and class. */
 		self.$save = document.createElement( "button" );
 		self.$save.innerHTML = "Save";
 		self.$save.className = "button-save edit";
 
-		/** Create "Edit button, add label, and class. */
-		self.$edit = document.createElement( "button" );
-		self.$edit.innerHTML = "Edit";
-		self.$edit.className = "button-edit preview";
-
 		/** Create "Cancel" button, add label, and class. */
 		self.$cancel = document.createElement( "button" );
 		self.$cancel.innerHTML = "Cancel";
 		self.$cancel.className = "button-cancel edit";
 
+		self.$cancel.addEventListener( "click", function () {
+			profiles.cancel();
+		});
+
 		/** Insert buttons into wrapper. */
 		self.$buttonsWrapper.appendChild( self.$save );
-		self.$buttonsWrapper.appendChild( self.$edit );
 		self.$buttonsWrapper.appendChild( self.$cancel );
+		self.$buttonsWrapper.appendChild( self.$edit );
+		self.$buttonsWrapper.appendChild( self.$delete );
 	}
 
 	/** Insert wrapper into panel. */
@@ -407,6 +473,19 @@ QUnitDesktopNotifications.profiles.profile = function ( name, values ) {
 	} else if ( arguments.length === 1 ) {
 		return null;
 	}
+};
+
+QUnitDesktopNotifications.profiles.edit = function () {
+	self.$panel.className = "edit";
+	self.$select.setAttribute( "disabled", "disabled" );
+};
+
+QUnitDesktopNotifications.profiles.save = function () {
+};
+
+QUnitDesktopNotifications.profiles.cancel = function () {
+	self.$panel.className = "preview";
+	self.$select.removeAttribute( "disabled" );
 };
 
 /** In case QUnit was not found, generate error and don't initialize desktop notifications. */

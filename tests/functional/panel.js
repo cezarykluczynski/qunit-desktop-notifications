@@ -105,6 +105,13 @@ define([
 						assert.ok( visible, "Select is visible." );
 					})
 					.end()
+					/** Check events wrapper visibility. */
+					.findByCssSelector( ".events-wrapper" )
+					.isDisplayed()
+					.then( function ( visible ) {
+						assert.notOk( visible, "Events wrapper is not visible." );
+					})
+					.end()
 					/** Check buttons wrapper visibility. */
 					.findByCssSelector( ".buttons-wrapper" )
 					.isDisplayed()
@@ -117,6 +124,50 @@ define([
 					.isDisplayed()
 					.then( function ( visible ) {
 						assert.ok( visible, "Label is visible." );
+					})
+					.end()
+				.end();
+		},
+		/** Check if the panel is created on first click on "Desktop Notifications" link. */
+		"Toggling between editing and previewing.": function () {
+			var self = this;
+
+			return this.remote
+				.get( boilerplate )
+				.setFindTimeout( 1000 )
+				/** Open panel by clicking entry. */
+				.findById( "qunit-desktop-notifications-entry" )
+					.click()
+					.end()
+				/** Find panel entry and click it. */
+				.findById( "qunit-desktop-notifications-panel" )
+					/** Check events wrapper visibility. */
+					.findByCssSelector( ".events-wrapper" )
+					.isDisplayed()
+					.then( function ( visible ) {
+						assert.notOk( visible, "Events wrapper is not visible." );
+					})
+					.end()
+					/** Click "Edit" button. */
+					.findByCssSelector( ".button-edit" )
+						.click()
+						.end()
+					/** Check events wrapper visibility again. */
+					.findByCssSelector( ".events-wrapper" )
+					.isDisplayed()
+					.then( function ( visible ) {
+						assert.ok( visible, "Events wrapper is visible after \"Edit\" was clicked." );
+					})
+					.end()
+					/** Click "Cancel" button. */
+					.findByCssSelector( ".button-cancel" )
+						.click()
+						.end()
+					/** Check events wrapper visibility again. */
+					.findByCssSelector( ".events-wrapper" )
+					.isDisplayed()
+					.then( function ( visible ) {
+						assert.notOk( visible, "Events wrapper is not visible after \"Cancel\" was clicked." );
 					})
 					.end()
 				.end();
