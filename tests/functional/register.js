@@ -14,7 +14,7 @@ define([
 		"Entry point is added to DOM.": function () {
 			return this.remote
 				.get( boilerplate )
-				.setFindTimeout( 1000 )
+				.setFindTimeout( 3000 )
 				.findByCssSelector( "body" )
 				.findById( "qunit-testrunner-toolbar" )
 				.findById( "qunit-desktop-notifications-entry" )
@@ -28,7 +28,7 @@ define([
 		"URL config item is added.": function () {
 			return this.remote
 				.get( boilerplate )
-				.setFindTimeout( 1000 )
+				.setFindTimeout( 3000 )
 				.findByCssSelector( "body" )
 				.findById( "qunit-testrunner-toolbar" )
 				.findById( "qunit-urlconfig-dnp" )
@@ -42,7 +42,7 @@ define([
 		"No URL config item is added.": function () {
 			return this.remote
 				.get( stopped )
-				.setFindTimeout( 1000 )
+				.setFindTimeout( 3000 )
 				.execute( function () {
 					/** Don't prepend URL config item. */
 					QUnitDesktopNotifications.options({
