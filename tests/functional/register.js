@@ -17,7 +17,6 @@ define([
 				.setFindTimeout( 1000 )
 				.findByCssSelector( "body" )
 				.findById( "qunit-testrunner-toolbar" )
-				.setFindTimeout( 100 )
 				.findById( "qunit-desktop-notifications-entry" )
 				.getVisibleText()
 				.then( function ( text ) {
@@ -32,7 +31,6 @@ define([
 				.setFindTimeout( 1000 )
 				.findByCssSelector( "body" )
 				.findById( "qunit-testrunner-toolbar" )
-				.setFindTimeout( 100 )
 				.findById( "qunit-urlconfig-dnp" )
 				.getSpecAttribute( "title" )
 				.then( function ( title ) {
@@ -44,7 +42,7 @@ define([
 		"No URL config item is added.": function () {
 			return this.remote
 				.get( stopped )
-				.setFindTimeout( 100 )
+				.setFindTimeout( 1000 )
 				.execute( function () {
 					/** Don't prepend URL config item. */
 					QUnitDesktopNotifications.options({
