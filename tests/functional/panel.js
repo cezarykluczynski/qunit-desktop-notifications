@@ -23,7 +23,6 @@ define([
 				.then( function ( $panel ) {
 					assert.typeOf( $panel, "null", "Panel not created before first click on entry link." );
 				})
-				.setFindTimeout( 100 )
 				/** Find panel entry and click it. */
 				.findById( "qunit-desktop-notifications-entry" )
 					.click()
@@ -55,7 +54,6 @@ define([
 				.findById( "qunit-desktop-notifications-entry" )
 					.click()
 					.end()
-				.setFindTimeout( 100 )
 				/** Check if panel is visible. */
 				.findById( "qunit-desktop-notifications-panel" )
 					.isDisplayed()
@@ -98,7 +96,6 @@ define([
 				.findById( "qunit-desktop-notifications-entry" )
 					.click()
 					.end()
-				.setFindTimeout( 100 )
 				/** Find panel entry and click it. */
 				.findById( "qunit-desktop-notifications-panel" )
 					/** Check profiles select visibility. */
@@ -146,7 +143,6 @@ define([
 				.findById( "qunit-desktop-notifications-entry" )
 					.click()
 					.end()
-				.setFindTimeout( 100 )
 				/** Find panel entry and click it. */
 				.findById( "qunit-desktop-notifications-panel" )
 					/** Check events wrapper visibility. */
@@ -216,7 +212,6 @@ define([
 				.findById( "qunit-desktop-notifications-entry" )
 					.click()
 					.end()
-				.setFindTimeout( 100 )
 				/** Find panel entry and click it. */
 				.findById( "qunit-desktop-notifications-panel" )
 				.findByCssSelector( ".button-edit" )
