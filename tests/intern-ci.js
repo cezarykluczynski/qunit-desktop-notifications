@@ -15,8 +15,7 @@ define({
 	},
 	environments: [
 		{ browserName: "Firefox" },
-		{ browserName: "Chrome" },
-		{ browserName: "Internet Explorer", platform: "Windows 8.1", version: "11" }
+		{ browserName: "Chrome" }
 	],
 	maxConcurrency: 3,
 	functionalSuites: [

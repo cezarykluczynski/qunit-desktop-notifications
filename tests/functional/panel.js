@@ -132,6 +132,7 @@ define([
 						.end()
 				.end();
 		},
+
 		/** Check if the panel is created on first click on "Desktop Notifications" link. */
 		"Toggling between editing and previewing.": function () {
 			var self = this;
@@ -198,7 +199,7 @@ define([
 							assert.notOk( visible, "Events wrapper is not visible after \"Cancel\" was clicked." );
 						})
 						.end()
-				.end();
+					.end();
 		},
 
 		/** Check if the profile can be saved. */
