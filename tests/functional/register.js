@@ -14,7 +14,7 @@ define([
 		"Entry point is added to DOM.": function () {
 			return this.remote
 				.get( boilerplate )
-				.setFindTimeout( 3000 )
+				.setFindTimeout( 1000 )
 				.findByCssSelector( "body" )
 				.findById( "qunit-testrunner-toolbar" )
 				.findById( "qunit-desktop-notifications-entry" )
@@ -28,10 +28,10 @@ define([
 		"URL config item is added.": function () {
 			return this.remote
 				.get( boilerplate )
-				.setFindTimeout( 3000 )
+				.setFindTimeout( 1000 )
 				.findByCssSelector( "body" )
 				.findById( "qunit-testrunner-toolbar" )
-				.findById( "qunit-urlconfig-dnp" )
+				.findByCssSelector( "#qunit-urlconfig-dnp" )
 				.getSpecAttribute( "title" )
 				.then( function ( title ) {
 					assert.include( title, "Desktop Notifications" );
@@ -42,7 +42,7 @@ define([
 		"No URL config item is added.": function () {
 			return this.remote
 				.get( stopped )
-				.setFindTimeout( 3000 )
+				.setFindTimeout( 1000 )
 				.execute( function () {
 					/** Don't prepend URL config item. */
 					QUnitDesktopNotifications.options({
@@ -52,7 +52,7 @@ define([
 					QUnit.start();
 				})
 				/** Check if no URL item was created. */
-				.waitForDeletedById( "qunit-urlconfig-dnp" )
+				.waitForDeletedByCssSelector( "#qunit-urlconfig-dnp" )
 				.then( function ( ) {
 					assert.ok( true, "No URL config entry created." );
 				})
@@ -60,7 +60,7 @@ define([
 				.findById( "qunit-desktop-notifications-entry" )
 				.then( function () {
 					assert.ok( true, "Link to panel created." );
-				})
+				});
 		}
 	});
 });
