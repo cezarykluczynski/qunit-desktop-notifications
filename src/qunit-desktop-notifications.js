@@ -245,6 +245,7 @@ QUnitDesktopNotifications.panel.toggle = function () {
 	if ( self.$panel === null ) {
 		self.panel.create();
 		self.profiles.refreshVisible();
+		self.profiles.cancel();
 	}
 
 	var display = self.$panel.style.display === "none" ? "block" : "none";
@@ -296,7 +297,6 @@ QUnitDesktopNotifications.profiles.init = function () {
 
 QUnitDesktopNotifications.profiles.refresh = function () {
 	this.profiles = JSON.parse( self.utils.localStorage( "profiles" ) ) || {};
-	this[ "default" ] = self.utils.localStorage( "default" );
 };
 
 QUnitDesktopNotifications.profiles.refreshVisible = function () {
@@ -325,7 +325,7 @@ QUnitDesktopNotifications.profiles.refreshSelect = function () {
 		name = names[ i ];
 		$option = document.createElement( "option" );
 		$option.setAttribute( "name", name );
-		$option.text = name + ( this[ "default" ] === name ? " (Default profile)" : "" );
+		$option.text = name;
 
 		$select.appendChild( $option );
 	}
@@ -338,7 +338,6 @@ QUnitDesktopNotifications.profiles.refreshSelect = function () {
 QUnitDesktopNotifications.profiles.refreshLabels = function () {
 	if ( ! self.$profilesLabel ) {
 		self.$profilesLabel = document.createElement( "label" );
-		self.$profilesLabel.innerHTML = "Choose profile:";
 	}
 
 	self.$panel.appendChild( self.$profilesLabel );
@@ -373,6 +372,7 @@ QUnitDesktopNotifications.profiles.refreshConfig = function () {
 		$checkbox = document.createElement( "input" );
 		$checkbox.setAttribute( "type", "checkbox" );
 		$checkbox.setAttribute( "id", checkboxName );
+		$checkbox.setAttribute( "qdn-event", eventName );
 
 		/** Create label for checkbox. */
 		$label = document.createElement( "label" );
@@ -405,6 +405,7 @@ QUnitDesktopNotifications.profiles.refreshButtons = function () {
 		self.$edit.innerHTML = "Edit";
 		self.$edit.className = "button-edit preview";
 
+		/** Hanlder for editing profile. */
 		self.$edit.addEventListener( "click", function () {
 			profiles.edit();
 		});
@@ -414,16 +415,27 @@ QUnitDesktopNotifications.profiles.refreshButtons = function () {
 		self.$delete.innerHTML = "Delete";
 		self.$delete.className = "button-delete preview";
 
+		/** Handler for profile removal. */
+		self.$delete.addEventListener( "click", function () {
+			profiles.delete();
+		});
+
 		/** Create "Save" button, add label, and class. */
 		self.$save = document.createElement( "button" );
 		self.$save.innerHTML = "Save";
 		self.$save.className = "button-save edit";
+
+		/** Handler for profile saving. */
+		self.$save.addEventListener( "click", function () {
+			profiles.save();
+		});
 
 		/** Create "Cancel" button, add label, and class. */
 		self.$cancel = document.createElement( "button" );
 		self.$cancel.innerHTML = "Cancel";
 		self.$cancel.className = "button-cancel edit";
 
+		/** Handler for canceling edit. */
 		self.$cancel.addEventListener( "click", function () {
 			profiles.cancel();
 		});
@@ -475,17 +487,101 @@ QUnitDesktopNotifications.profiles.profile = function ( name, values ) {
 	}
 };
 
+/** Save current state of profiles to localStorage. */
+QUnitDesktopNotifications.profiles.saveToLocalStorage = function () {
+	self.utils.localStorage( "profiles", JSON.stringify( this.profiles ) );
+};
+
+/** Return a name of currently selected profile name, or default otherwise. */
+QUnitDesktopNotifications.profiles.selectedProfileName = function () {
+	return self.$select.options[ self.$select.selectedIndex ].value;
+};
+
+/** Return config for currently selected profile. */
+QUnitDesktopNotifications.profiles.selectedProfileConfig = function () {
+	return this.profile( this.selectedProfileName() );
+};
+
+/** Start profile edit. */
 QUnitDesktopNotifications.profiles.edit = function () {
+	/** Set class name to edit: some button will be shown, other will be hidden. Panel itself will be shown. */
 	self.$panel.className = "edit";
+
+	/** Disable select on the profile currently being edited. */
 	self.$select.setAttribute( "disabled", "disabled" );
+
+	/** Toggle label for select. */
+	self.$profilesLabel.innerHTML = "Now editing:";
+
+	/** Get config for current profile. */
+	var config = this.selectedProfileConfig();
+
+	/** Variables used in the iteration over checkboxes. */
+	var $childItem, eventName;
+
+	for ( var i = 0; i < self.$list.children.length; i++ ) {
+		/** Get first child of list item. */
+		$childItem = self.$list.children[ i ].childNodes[ 0 ];
+
+		/** Skip text nodes. */
+		if ( $childItem.nodeType === 3 ) {
+			continue;
+		}
+
+		/** Mark checkbox as checked if config has a corresponding property with value equal to true. */
+		eventName = $childItem.getAttribute( "qdn-event" );
+		$childItem.checked = config[ eventName ] === true;
+	}
 };
 
+/** Saving a profile. */
 QUnitDesktopNotifications.profiles.save = function () {
+	/** Current profile name. */
+	var name = this.selectedProfileName();
+
+	/** Current profile config. */
+	var config = this.profile( name );
+
+	/** Variables used in the iteration over checkboxes. */
+	var $childItem, eventName;
+
+	for ( var i = 0; i < self.$list.children.length; i++ ) {
+		/** Get first child of list item. */
+		$childItem = self.$list.children[ i ].childNodes[ 0 ];
+
+		/** Skip text nodes. */
+		if ( $childItem.nodeType === 3 ) {
+			continue;
+		}
+
+		/** Save current checkbox state to a corresponding property value on profile config's object. */
+		eventName = $childItem.getAttribute( "qdn-event" );
+		config[ eventName ] = $childItem.checked;
+	}
+
+	/** Save new profile config. */
+	this.profile( name, config );
+
+	/** Save everything to localStorage. */
+	this.saveToLocalStorage();
+
+	/** Revert to preview state. */
+	this.cancel();
 };
 
+/** Reverts panel state to previewing profiles. */
 QUnitDesktopNotifications.profiles.cancel = function () {
+	/** Set class name to preview: some button will be shown, other will be hidden. Panel itself will be hidden. */
 	self.$panel.className = "preview";
+
+	/** Disable select: no changing profiles while editing. */
 	self.$select.removeAttribute( "disabled" );
+
+	/** Toggle label for select. */
+	self.$profilesLabel.innerHTML = "Choose profile to edit:";
+};
+
+QUnitDesktopNotifications.profiles.delete = function () {
 };
 
 /** In case QUnit was not found, generate error and don't initialize desktop notifications. */

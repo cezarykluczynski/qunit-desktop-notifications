@@ -3,9 +3,7 @@ Work in progress, not yet usable.
 Build status
 ============
 [![Build Status](https://travis-ci.org/cezarykluczynski/qunit-desktop-notifications.svg?branch=master)](https://travis-ci.org/cezarykluczynski/qunit-desktop-notifications)
-
 [![Sauce Test Status](https://saucelabs.com/buildstatus/qunit-dn)](https://saucelabs.com/u/qunit-dn)
-
 [![Coverage Status](https://coveralls.io/repos/cezarykluczynski/qunit-desktop-notifications/badge.svg)](https://coveralls.io/r/cezarykluczynski/qunit-desktop-notifications)
 
 Installation
