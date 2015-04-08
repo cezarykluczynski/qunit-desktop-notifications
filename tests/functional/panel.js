@@ -154,14 +154,14 @@ define([
 						})
 						.end()
 					/** "Delete" button visibility check. */
-					.findByCssSelector( ".button-delete" )
+					.findByCssSelector( "button[action=delete]" )
 						.isDisplayed()
 						.then( function ( visible ) {
 							assert.ok( visible, "Button \"Delete\" is visible." );
 						})
 						.end()
 					/** "Edit" button visibility check. */
-					.findByCssSelector( ".button-edit" )
+					.findByCssSelector( "button[action=edit]" )
 						.isDisplayed()
 						.then( function ( visible ) {
 							assert.ok( visible, "Button \"Edit\" is visible." );
@@ -177,14 +177,14 @@ define([
 						})
 						.end()
 					/** "Save" button visibility check. */
-					.findByCssSelector( ".button-save" )
+					.findByCssSelector( "button[action=save]" )
 						.isDisplayed()
 						.then( function ( visible ) {
 							assert.ok( visible, "Button \"Save\" is visible." );
 						})
 						.end()
 					/** "Cancel" button visibility check. */
-					.findByCssSelector( ".button-cancel" )
+					.findByCssSelector( "button[action=cancel]" )
 						.isDisplayed()
 						.then( function ( visible ) {
 							assert.ok( visible, "Button \"Cancel\" is visible." );
@@ -215,7 +215,7 @@ define([
 					.end()
 				/** Find panel entry and click it. */
 				.findById( "qunit-desktop-notifications-panel" )
-				.findByCssSelector( ".button-edit" )
+				.findByCssSelector( "button[action=edit]" )
 					.click()
 					.end()
 				/** Check of one element is checked when editing default profile. */
@@ -229,7 +229,7 @@ define([
 					.click()
 					.end()
 				/** Save profile. */
-				.findByCssSelector( ".button-save" )
+				.findByCssSelector( "button[action=save]" )
 					.click()
 					.end()
 				/** Get profiles from local storage. */

@@ -21,6 +21,7 @@ self = QUnitDesktopNotifications = {
 	$cancel: null,
 	$select: null,
 	$delete: null,
+	$new: null,
 	$profilesLabel: null,
 	$buttonsWrapper: null,
 	$list: null,
@@ -400,51 +401,42 @@ QUnitDesktopNotifications.profiles.refreshButtons = function () {
 		self.$buttonsWrapper = document.createElement( "div" );
 		self.$buttonsWrapper.className = "buttons-wrapper";
 
-		/** Create "Edit" button, add label, and class. */
-		self.$edit = document.createElement( "button" );
-		self.$edit.innerHTML = "Edit";
-		self.$edit.className = "button-edit preview";
+		/** Variable for the iteration. */
+		var i, group, buttonName, $button;
 
-		/** Hanlder for editing profile. */
-		self.$edit.addEventListener( "click", function () {
-			profiles.edit();
-		});
+		/** Buttons to create for both groups: previewing and editing profile. */
+		var buttonsGroups = {
+			preview: [ "edit", "delete", "new" ],
+			edit: [ "save", "cancel" ]
+		};
 
-		/** Create "Delete" button, add label, and class. */
-		self.$delete = document.createElement( "button" );
-		self.$delete.innerHTML = "Delete";
-		self.$delete.className = "button-delete preview";
+		/** Go over the groups, then over the buttons. */
+		for ( group in buttonsGroups ) {
+			for ( i = 0; i < buttonsGroups[ group ].length; i++ ) {
+				/** Save button name in variable. */
+				buttonName = buttonsGroups[ group ][ i ];
 
-		/** Handler for profile removal. */
-		self.$delete.addEventListener( "click", function () {
-			profiles.delete();
-		});
+				/** Save button reference in variable, and in main plugin object. */
+				$button = self[ "$" + buttonName ] = document.createElement( "button" );
 
-		/** Create "Save" button, add label, and class. */
-		self.$save = document.createElement( "button" );
-		self.$save.innerHTML = "Save";
-		self.$save.className = "button-save edit";
+				/** Set button label. */
+				$button.innerHTML = buttonName[ 0 ].toUpperCase() + buttonName.slice( 1 );
 
-		/** Handler for profile saving. */
-		self.$save.addEventListener( "click", function () {
-			profiles.save();
-		});
+				/** Set action for which the button is responsible. */
+				$button.setAttribute( "action", buttonName );
 
-		/** Create "Cancel" button, add label, and class. */
-		self.$cancel = document.createElement( "button" );
-		self.$cancel.innerHTML = "Cancel";
-		self.$cancel.className = "button-cancel edit";
+				/** Set class name matching the group name. */
+				$button.className = group;
 
-		/** Handler for canceling edit. */
-		self.$cancel.addEventListener( "click", function () {
-			profiles.cancel();
-		});
+				/** Add handler for click: do the action matching button "action" param. */
+				$button.addEventListener( "click", function () {
+					profiles[ this.getAttribute( "action" ) ]();
+				});
 
-		/** Insert buttons into wrapper. */
-		self.$buttonsWrapper.appendChild( self.$save );
-		self.$buttonsWrapper.appendChild( self.$cancel );
-		self.$buttonsWrapper.appendChild( self.$edit );
-		self.$buttonsWrapper.appendChild( self.$delete );
+				/** Insert button into wrapper. */
+				self.$buttonsWrapper.appendChild( $button );
+			}
+		}
 	}
 
 	/** Insert wrapper into panel. */
@@ -581,6 +573,11 @@ QUnitDesktopNotifications.profiles.cancel = function () {
 	self.$profilesLabel.innerHTML = "Choose profile to edit:";
 };
 
+/** Creates new profile. */
+QUnitDesktopNotifications.profiles.new = function () {
+};
+
+/** Deleting selected profile. */
 QUnitDesktopNotifications.profiles.delete = function () {
 };
 
