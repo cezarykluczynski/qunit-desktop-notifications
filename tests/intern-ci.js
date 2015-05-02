@@ -19,6 +19,8 @@ define({
 	],
 	maxConcurrency: 3,
 	functionalSuites: [
+		"tests/functional/edit",
+		"tests/functional/delete",
 		"tests/functional/register",
 		"tests/functional/initialization",
 		"tests/functional/localStorage",

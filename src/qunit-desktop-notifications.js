@@ -305,6 +305,7 @@ QUnitDesktopNotifications.profiles.refreshVisible = function () {
 	this.refreshSelect();
 	this.refreshConfig();
 	this.refreshButtons();
+	this.setButtonDeleteStatus();
 }
 
 QUnitDesktopNotifications.profiles.refreshSelect = function () {
@@ -313,6 +314,12 @@ QUnitDesktopNotifications.profiles.refreshSelect = function () {
 
 	/** Get either the existing select, or create a new one. */
 	var $select = self.$select || document.createElement( "select" );
+
+	if ( ! self.$select ) {
+		$select.addEventListener( "change", function () {
+			self.profiles.setButtonDeleteStatus();
+		});
+	}
 
 	/** Remove all children. */
 	while ( $select.firstChild ) {
@@ -441,6 +448,16 @@ QUnitDesktopNotifications.profiles.refreshButtons = function () {
 
 	/** Insert wrapper into panel. */
 	self.$panel.appendChild( self.$buttonsWrapper );
+};
+
+/** Sets status of delete button, disablsing it if profile name is default. */
+QUnitDesktopNotifications.profiles.setButtonDeleteStatus = function () {
+	/** Whether the profile name is "default". */
+	var defaultProfileIsSelected = self.profiles.selectedProfileName() === "default";
+
+	/** Disable button, is profile name is "default", and show apriopriate label. */
+	self.$delete.disabled = defaultProfileIsSelected;
+	self.$delete.setAttribute( "title", defaultProfileIsSelected ? "Default profile cannot be deleted" : "" );
 };
 
 /** Return all profiles names. */
@@ -575,6 +592,8 @@ QUnitDesktopNotifications.profiles.cancel = function () {
 
 /** Creates new profile. */
 QUnitDesktopNotifications.profiles.new = function () {
+	/** Set select label. */
+	self.$profilesLabel.innerHTML = "Creating new profile...";
 };
 
 /** Deleting selected profile. */
