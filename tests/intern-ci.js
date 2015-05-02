@@ -25,5 +25,5 @@ define({
 		"tests/functional/localStorage",
 		"tests/functional/panel"
 	],
-	excludeInstrumentation: /^(node_modules|bower_components|tests)/
+	excludeInstrumentation: /tests|node_modules|bower_components/
 });
