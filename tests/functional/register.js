@@ -56,7 +56,7 @@ define([
 					return document.getElementById( "qunit-urlconfig-dnp" ) === null;
 				})
 				.then( function ( result ) {
-					assert.ok( true, "No URL config entry created." );
+					assert.ok( result, "No URL config entry created." );
 				})
 				/** Check if link to panel was created. */
 				.findById( "qunit-desktop-notifications-entry" )
