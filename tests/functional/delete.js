@@ -9,10 +9,8 @@ define([
 	registerSuite({
 		name: "Deleting",
 
-		/** Check if the profile can be saved. */
-		"Default profile can't be deleted.": function () {
-			var self = this;
-
+		/** Check if the profile can be deleted. */
+		"Profile can be deleted.": function () {
 			return this.remote
 				.get( boilerplate )
 				.setFindTimeout( 3000 )
@@ -25,24 +23,36 @@ define([
 				/** Find select, and set it's vaule to "silent" then assert delete button state. */
 				.findByCssSelector( "select" )
 					.click()
-					.findByCssSelector( "option[name='silent']" )
+					.findByCssSelector( "option[name=\"silent\"]" )
 						.click()
 						.end()
 					.end()
-				.findByCssSelector( "button[action='delete']" )
+				.findByCssSelector( "button[action=\"delete\"]" )
 				.isEnabled()
 				.then( function ( enabled ) {
 					assert.ok( enabled, "Delete button is enable when \"default\" profile is not selected." );
-				})
-				.end()
+				});
+		},
+
+		/** Check if the default profile can't be deleted. */
+		"Default profile can't be deleted.": function () {
+			return this.remote
+				.get( boilerplate )
+				.setFindTimeout( 3000 )
+				/** Open panel by clicking entry. */
+				.findById( "qunit-desktop-notifications-entry" )
+					.click()
+					.end()
+				/** Find panel entry and click it. */
+				.findById( "qunit-desktop-notifications-panel" )
 				/** Find select, and set it's vaule to "default" then assert delete button state. */
 				.findByCssSelector( "select" )
 					.click()
-					.findByCssSelector( "option[name='default']" )
+					.findByCssSelector( "option[name=\"default\"]" )
 						.click()
 						.end()
 					.end()
-				.findByCssSelector( "button[action='delete']" )
+				.findByCssSelector( "button[action=\"delete\"]" )
 				.isEnabled()
 				.then( function ( enabled ) {
 					assert.notOk( enabled, "Delete button is disabled when \"default\" profile is selected." );

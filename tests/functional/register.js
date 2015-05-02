@@ -53,8 +53,8 @@ define([
 				})
 				/** Check if no URL item was created. */
 				.waitForDeletedById( "qunit-urlconfig-dnp" )
-				.then( function ( result ) {
-					assert.ok( result, "No URL config entry created." );
+				.then( function () {
+					assert.ok( true, "No URL config entry created." );
 				})
 				/** Check if link to panel was created. */
 				.findById( "qunit-desktop-notifications-entry" )
