@@ -52,8 +52,10 @@ define([
 					QUnit.start();
 				})
 				/** Check if no URL item was created. */
-				.waitForDeletedById( "qunit-urlconfig-dnp" )
-				.then( function () {
+				.execute( function () {
+					return document.getElementById( "qunit-urlconfig-dnp" ) === null;
+				})
+				.then( function ( result ) {
 					assert.ok( true, "No URL config entry created." );
 				})
 				/** Check if link to panel was created. */
