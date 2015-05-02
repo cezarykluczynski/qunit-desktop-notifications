@@ -52,8 +52,8 @@ define([
 					QUnit.start();
 				})
 				/** Check if no URL item was created. */
-				.waitForDeletedByCssSelector( "#qunit-urlconfig-dnp" )
-				.then( function ( ) {
+				.waitForDeletedById( "qunit-urlconfig-dnp" )
+				.then( function () {
 					assert.ok( true, "No URL config entry created." );
 				})
 				/** Check if link to panel was created. */
