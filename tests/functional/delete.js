@@ -46,8 +46,7 @@ define([
 				.isEnabled()
 				.then( function ( enabled ) {
 					assert.notOk( enabled, "Delete button is disabled when \"default\" profile is selected." );
-				})
-				.end();
+				});
 		}
 	});
 });
