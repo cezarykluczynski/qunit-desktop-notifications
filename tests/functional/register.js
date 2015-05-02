@@ -52,9 +52,7 @@ define([
 					QUnit.start();
 				})
 				/** Check if no URL item was created. */
-				.execute( function () {
-					return document.getElementById( "qunit-urlconfig-dnp" ) === null;
-				})
+				.waitForDeletedById( "qunit-urlconfig-dnp" )
 				.then( function ( result ) {
 					assert.ok( result, "No URL config entry created." );
 				})
