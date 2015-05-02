@@ -14,7 +14,6 @@ define({
 		port: 4444
 	},
 	environments: [
-		{ browserName: "Firefox", platform: "Windows 7", version: "35" },
 		{ browserName: "Chrome" }
 	],
 	maxConcurrency: 3,
