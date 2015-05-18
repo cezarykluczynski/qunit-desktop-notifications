@@ -13,7 +13,7 @@ module.exports = function (grunt) {
 				options: {
 					runType: "client",
 					config: "tests/intern",
-					reporters: [ "combined" ]
+					reporters: [ "Combined" ]
 				}
 			},
 			/** Local functional tests config. */
@@ -21,7 +21,7 @@ module.exports = function (grunt) {
 				options: {
 					runType: "runner",
 					config: "tests/intern",
-					reporters: [ "combined" ]
+					reporters: [ "Combined" ]
 				}
 			},
 			/** CI unit tests config. */

@@ -31,7 +31,7 @@
     "test": "grunt test"
   },
   "devDependencies": {
-    "intern": "theintern/intern#master",
+    "intern": "2.2.2",
     "grunt": "~0.4.5",
     "grunt-coveralls": "^1.0.0"
   }

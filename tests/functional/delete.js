@@ -27,10 +27,21 @@ define([
 						.click()
 						.end()
 					.end()
+				/** Assert that the "silent" profile can be deleted, and delete it. */
 				.findByCssSelector( "button[action=\"delete\"]" )
-				.isEnabled()
-				.then( function ( enabled ) {
-					assert.ok( enabled, "Delete button is enable when \"default\" profile is not selected." );
+					.isEnabled()
+					.then( function ( enabled ) {
+						assert.ok( enabled, "Delete button is enable when \"default\" profile is not selected." );
+					})
+					.click()
+					.end()
+				/** Assert that the "silent" profile was deleted. */
+				.waitForDeletedByCssSelector( "select option[name=\"silent\"]" )
+				.execute( function () {
+					return QUnitDesktopNotifications.utils.localStorage( "silent" );
+				})
+				.then( function ( silent ) {
+					assert.equal( silent, null, "Item was deleted from local storage." );
 				});
 		},
 

@@ -598,6 +598,9 @@ QUnitDesktopNotifications.profiles.new = function () {
 
 /** Deleting selected profile. */
 QUnitDesktopNotifications.profiles.delete = function () {
+	var profileName = this.selectedProfileName();
+	this.profile( profileName, null );
+	this.refreshVisible();
 };
 
 /** In case QUnit was not found, generate error and don't initialize desktop notifications. */
