@@ -30,7 +30,7 @@ define([
 
 		/** Test getter behaviour for non-existing value. */
 		"QUnitDesktopNotifications.profiles.profile(): getter behaviour, non-existing value.": function () {
-			assert.equal( self.QUnitDesktopNotifications.profiles.profile( "not-here" ), null, "OK" );
+			assert.deepEqual( self.QUnitDesktopNotifications.profiles.profile( "not-here" ), {}, "OK" );
 		},
 
 		/** Test setter behaviour for new value. */
@@ -61,7 +61,7 @@ define([
 		"QUnitDesktopNotifications.profiles.profile(): delete behaviour, existing value.": function () {
 			self.QUnitDesktopNotifications.profiles.profile( "default", null );
 
-			assert.strictEqual( self.QUnitDesktopNotifications.profiles.profile( "default" ), null, "OK" );
+			assert.deepEqual( self.QUnitDesktopNotifications.profiles.profile( "default" ), {}, "OK" );
 		}
 	});
 });

@@ -29,14 +29,21 @@
 		margin-bottom: .4em;
 	}
 
-	#qunit-desktop-notifications-panel .events-wrapper {
+	#qunit-desktop-notifications-panel .events-wrapper,
+	#qunit-desktop-notifications-panel input[name=name] {
 		margin: 0;
 		padding: 0;
 		list-style-type: none;
 		display: none;
 	}
 
-	#qunit-desktop-notifications-panel.edit .events-wrapper {
+	#qunit-desktop-notifications-panel input[name=name] {
+		box-sizing: border-box;
+		width: 100%;
+	}
+
+	#qunit-desktop-notifications-panel.edit .events-wrapper,
+	#qunit-desktop-notifications-panel.edit.new input[name=name] {
 		display: block;
 	}
 
@@ -64,4 +71,3 @@
 	#qunit-desktop-notifications-panel.edit .edit {
 		display: inline-block;
 	}
-

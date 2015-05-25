@@ -25,6 +25,8 @@ self = QUnitDesktopNotifications = {
 	$profilesLabel: null,
 	$buttonsWrapper: null,
 	$list: null,
+	$newProfile: null,
+	$name: null,
 	config: {
 		urlConfig: true,
 		disabled: false
@@ -303,6 +305,7 @@ QUnitDesktopNotifications.profiles.refresh = function () {
 QUnitDesktopNotifications.profiles.refreshVisible = function () {
 	this.refreshLabels();
 	this.refreshSelect();
+	this.refreshName();
 	this.refreshConfig();
 	this.refreshButtons();
 	this.setButtonDeleteStatus();
@@ -343,12 +346,24 @@ QUnitDesktopNotifications.profiles.refreshSelect = function () {
 	self.$panel.appendChild( $select );
 };
 
+/** Creates or appends labels. */
 QUnitDesktopNotifications.profiles.refreshLabels = function () {
 	if ( ! self.$profilesLabel ) {
 		self.$profilesLabel = document.createElement( "label" );
 	}
 
 	self.$panel.appendChild( self.$profilesLabel );
+};
+
+/** Creates or appends input containing profile name. */
+QUnitDesktopNotifications.profiles.refreshName = function () {
+	if ( ! self.$name ) {
+		self.$name = document.createElement( "input" );
+		self.$name.setAttribute( "name", "name" );
+		self.$name.setAttribute( "placeholder", "Enter profile name" );
+	}
+
+	self.$panel.appendChild( self.$name );
 };
 
 /** Create HTML for profile config. */
@@ -492,7 +507,7 @@ QUnitDesktopNotifications.profiles.profile = function ( name, values ) {
 	if ( arguments.length === 2 && values !== null ) {
 		this.profiles[ name ] = values;
 	} else if ( arguments.length === 1 ) {
-		return null;
+		return {};
 	}
 };
 
@@ -588,18 +603,64 @@ QUnitDesktopNotifications.profiles.cancel = function () {
 
 	/** Toggle label for select. */
 	self.$profilesLabel.innerHTML = "Choose profile to edit:";
+
+	/** Remove placeholder for new item, if it's present. */
+	if ( self.$newProfile ) {
+		self.$select.removeChild( self.$newProfile );
+		self.$newProfile = null;
+
+		/** Remove handler from name input. */
+		self.$name.removeEventListener( "keyup", QUnitDesktopNotifications.profiles.newProfileNameHandle );
+	}
+};
+
+/** Handler for saving new profile name. */
+QUnitDesktopNotifications.profiles.newProfileNameHandle = function () {
+	if ( self.$newProfile ) {
+		self.$newProfile.text = event.target.value;
+
+		/** Remove non-ASCII characters from string, and make string lowercase. */
+		self.$newProfile.value = event.target.value.replace( /[^\x00-\x7F]/g, "" ).toLowerCase();
+	}
 };
 
 /** Creates new profile. */
 QUnitDesktopNotifications.profiles.new = function () {
 	/** Set select label. */
 	self.$profilesLabel.innerHTML = "Creating new profile...";
+
+	/** Create new option and append it to select. */
+	self.$newProfile = document.createElement( "option" );
+	self.$select.appendChild( self.$newProfile );
+
+	/** Select the newly created profile. */
+	self.$select.selectedIndex = self.$select.childNodes.length - 1;
+
+	/** Disable select on the newly created element. */
+	self.$select.setAttribute( "disabled", "disabled" );
+
+	/** Set class name to edit: some button will be shown, other will be hidden. Panel itself will be shown. */
+	self.$panel.className = "edit new";
+
+	var a = self.$name.addEventListener( "keyup", QUnitDesktopNotifications.profiles.newProfileNameHandle );
+
+	/** Clear name input. */
+	self.$name.value = "";
+
+	/** Focus cursor on user input. */
+	self.$name.focus();
 };
 
 /** Deleting selected profile. */
 QUnitDesktopNotifications.profiles.delete = function () {
 	var profileName = this.selectedProfileName();
+
+	/** Remove profile from local cache. */
 	this.profile( profileName, null );
+
+	/** Save refreshed profiles object to local storage. */
+	this.saveToLocalStorage();
+
 	this.refreshVisible();
 };
 
