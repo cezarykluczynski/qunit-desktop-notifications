@@ -617,10 +617,10 @@ QUnitDesktopNotifications.profiles.cancel = function () {
 /** Handler for saving new profile name. */
 QUnitDesktopNotifications.profiles.newProfileNameHandle = function () {
 	if ( self.$newProfile ) {
-		self.$newProfile.text = event.target.value;
-
 		/** Remove non-ASCII characters from string, and make string lowercase. */
-		self.$newProfile.value = event.target.value.replace( /[^\x00-\x7F]/g, "" ).toLowerCase();
+		var normalizedLabel = event.target.value.replace( /[^\x00-\x7F]/g, "" ).toLowerCase();;
+
+		self.$newProfile.text = self.$newProfile.value = normalizedLabel;
 	}
 };
 
