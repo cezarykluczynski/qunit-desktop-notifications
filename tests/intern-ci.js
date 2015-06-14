@@ -2,6 +2,7 @@ define({
 	suites: [
 		"tests/unit/smoke",
 		"tests/unit/environment",
+		"tests/unit/messages",
 		"tests/unit/profile"
 	],
 	proxyPort: 9090,

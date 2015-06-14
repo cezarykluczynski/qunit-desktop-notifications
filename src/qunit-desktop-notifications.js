@@ -42,6 +42,7 @@ QUnitDesktopNotifications.start = function () {
 	this.profiles.init();
 	this.decideURLConfigItem();
 	this.addQUnitHandlers();
+	this.askNotificationsPermission();
 
 	return true;
 };
@@ -84,30 +85,14 @@ QUnitDesktopNotifications.validateEnvironment = function () {
 
 /** Adds handlers for all QUnit event. */
 QUnitDesktopNotifications.addQUnitHandlers = function () {
-	QUnit.done( function () {
-		self.log.done();
-	});
-
-	QUnit.log( function () {
-		self.log.log();
-	});
-
-	QUnit.moduleDone( function () {
-		self.log.moduleDone();
-	});
-
-	QUnit.moduleStart( function () {
-		self.log.moduleStart();
-	});
-
-	QUnit.testDone( function () {
-		self.log.testDone();
-	});
-
-	QUnit.testStart( function () {
-		self.log.testStart();
-	});
-}
+	QUnit.begin( self.log.begin );
+	QUnit.done( self.log.done );
+	QUnit.log( self.log.log );
+	QUnit.moduleDone( self.log.moduleDone );
+	QUnit.moduleStart( self.log.moduleStart );
+	QUnit.testDone( self.log.testDone );
+	QUnit.testStart( self.log.testStart );
+};
 
 /** Local storage utility: getter, setter and detector. */
 QUnitDesktopNotifications.utils.localStorage = function ( key, value ) {
@@ -159,14 +144,139 @@ QUnitDesktopNotifications.options = function ( options ) {
 	}
 };
 
+/** Notifications logger. */
 QUnitDesktopNotifications.log = {
-	begin: function () {},
-	done: function () {},
-	log: function () {},
-	moduleDone: function () {},
-	moduleStart: function () {},
-	testDone: function () {},
-	testStart: function () {}
+	begin: function ( details ) {
+		self.notifications.addNotification( "begin", details );
+	},
+	done: function ( details ) {
+		self.notifications.addNotification( "done", details );
+	},
+	log: function ( details ) {
+		self.notifications.addNotification( "log", details );
+	},
+	moduleDone: function ( details ) {
+		self.notifications.addNotification( "moduleDone", details );
+	},
+	moduleStart: function ( details ) {
+		self.notifications.addNotification( "moduleStart", details );
+	},
+	testDone: function ( details ) {
+		self.notifications.addNotification( "testDone", details );
+	},
+	testStart: function ( details ) {
+		self.notifications.addNotification( "testStart", details );
+	},
+};
+
+QUnitDesktopNotifications.notifications = {
+	addNotification: function ( eventName, details ) {
+		/** Do nothing if notifications are not available. */
+		if ( ! self.canNotify() ) {
+			return;
+		}
+
+		/** Do nothing if user should not be notified of this event, according to profile settings. */
+		if ( ! self.profiles.shouldNotify( eventName ) ) {
+			return;
+		}
+
+		new Notification( this.getMessageTitle( eventName, details ), {
+			body: this.getMessageBody( eventName, details ),
+			icon: this.getMessageIcon( eventName, details )
+		});
+	},
+	/** Return message body. */
+	getMessageBody: function ( eventName, details ) {
+		/** Message could be either a string or a function. */
+		var message = {
+			begin: function () {
+				return {
+					0: "No tests are scheduled.",
+					1: "1 test is scheduled.",
+					2: details.totalTests + " tests are scheduled.",
+				}[ details.totalTests >= 2 ? 2 : details.totalTests ]
+			},
+			done: function () {
+				var total = {
+					0: "No tests executed",
+					1: "1 test executed",
+					2: details.total + " tests executed",
+				}[ details.total >= 2 ? 2 : details.total ];
+
+				return total + ", " + details.passed + " passed, " + details.failed + " failed.";
+			}
+		}[ eventName ];
+
+		return typeof message === "function" ? message() : message;
+	},
+	/** Return message title. */
+	getMessageTitle: function ( eventName, details ) {
+		return {
+			begin: "Tests began.",
+			done: "Tests are done, " + ( details.failed ? "with" : "without" ) + " errors.",
+			log: "Assertion " + ( details.result ? "passed" : "failed" ) + ".",
+		}[ eventName ];
+	},
+	getMessageIcon: function ( eventName, details ) {
+		/** Callback from "begin" family has only informational icon. */
+		if ( [ "begin", "moduleStart", "testStart" ].indexOf( eventName ) > -1 ) {
+			return this.icons.info;
+		}
+
+		/** Callbacks from "done" family can either have "success" or "error" icon. */
+		if ( [ "done", "moduleDone", "testDone" ].indexOf( eventName ) > -1 ) {
+			return details.failed ? this.icons.error : this.icons.tick;
+		}
+
+		/** Single assertion has "result" key set to true is assertion passed. */
+		return details.result ? this.icons.tick : this.icons.error;
+	},
+	icons: {
+		/**
+		 * Source: http://commons.wikimedia.org/wiki/File:Allowed.svg
+		 * License: public domain
+		 */
+		tick: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAlCAYAAAAwYKuzAAAABmJLR0QA/wD/AP+gvaeTAAACA0lEQVRY" +
+			"he2Xv27UMBzHP75juEOAEt6gvacoNzBcIhh6fYx2pYAAZWBD6EShbDQVb9F0KW1VqajqU6QDO5TNAgkzXFOlJydx/jgnVffZLFv2R1/H" +
+			"dn6wYIF9nF3/cVZfp00RHW7oT4RSJ07ofdL1d9sWSuOG/gTUKwABK721wQO5Fx+kx8xNMC2XIGClN166L6OLa8m5COrkEgTiUX91+Z6M" +
+			"4m/Tdsu4oR+Aelc0Toh/w5/rx2d32pBKyEsujYLNX+vHZ9BigmXkLjcOPyftVgSrykELgnXkwLJgXTmwKNiEHFgSbEoOMt7ivMfbQC4w" +
+			"kUOooEgONIIPQ29bKHUyTaG03MTkEp7ec0fvTea88dQ5u/5HYPOqOeyPB3dlFB+WkGtkW7WCTjjaEvBipt9I0pbctaC7430QQrzMGJMr" +
+			"aVMOoOt+8Yd0+FowbthfW/oj9y6+z8gFoN4WriJUcLlxtFVWDqAr9+MfvfHybwFPC1YZpZO8Sq5QbppcNTlI3YOmv0EIFaA6wnSs6Wkt" +
+			"FARwQu+ZgO06EyZU/eZmuXHNyCg+N9vufJqSA80vv4zi8/548BcYVZqxxoHQoa1JZBSfVkmy7oHQkVk0lU6y4eQScqs60yRtJJdQWHYW" +
+			"HZwmD4QOo7o4c7stbWsa48I9td1PABQ8ty1XCTf03rg7/ut5eyy4NfwHkLQKbZNGe+8AAAAASUVORK5CYII=",
+		/**
+		 * Source: http://commons.wikimedia.org/wiki/File:Not_allowed.svg
+		 * License: public domain
+		 */
+		error: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAlCAYAAAAwYKuzAAAABmJLR0QA/wD/AP+gvaeTAAAB+0lEQVR" +
+			"Yhe2YTXLiMBCFn1zZz2AugNrHyCJXgsAwNc56kiIhA0dikeQWFifAukE6i5gqh9hW66eKmireDvmp9ZUkpG4BF10E2Mnk5lwxM5fhQLT" +
+			"hLNvVRKt4rE/VRCvOsp0l+ufyDgJaomcFTJufyxSQTYwlADAws0TPQYC2KNYM3J40R0G24Y5i4NYWxbqvj+oMVBRPYF4MjPWYG/M7Fu4" +
+			"riVrnVfXLCVgXxTWYXwRjlrkxDyI4rUso9dflY6Wux1X11m77tsR5Vb0qYCYY916y3DXRSgKngNkpXNPeLUs0ZWDj5uxfbueytuBGxmx" +
+			"7vvUrBjIFnBMwFDIVnAgQkG9yACWYldQr+ZOJAAGvmXRKMnMtr1wpIH3gGr+fYiB94Zo+/gqBDIEDBNlMl0bGbMF859GlDIEDAgEBAEr" +
+			"98HD/DB4mpJP0nDuRd4IBBAAGwh3lDekFGAl3lBekeA/WWpeIhwM+k94/UrPsqvO4WwEgNgtq6yol3PEosUQSyGVNBBfk4AzGZCUp8sl" +
+			"BwBQpUwrI7qIpYT4XC/l/Fk0d9fAXKWAmhQOAfL+/dxVifUVT5zk4NmbDwLwvUMjFPzJm2wfJwDyoaDpoPVdKrVvmILi2TvckMy/G+/3" +
+			"g88egDlovaqJ3SzR1u2WyRNOa6P2g9dDrhUfAMz6/XRSrD9VuF/4svRvsAAAAAElFTkSuQmCC",
+		/**
+		 * Source: http://commons.wikimedia.org/wiki/File:Info_Simple.svg
+		 * License: public domain
+		 */
+		info: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAAABmJLR0QA/wD/AP+gvaeTAAAEAUlEQVRY" +
+			"hd2ZXWxTZRiAn/druw42TbpkwATm2q5uovEnDDUgc8OBOL3T6IUSExNRYzY0XpiYGJdxY4yJiAuJk3C1EKJMEzWCExhZgpDMBS80TLe1" +
+			"OCdkELexhY7R7rzebMtod7qedlDjc3e+9zvv9/TnfD/vETKhSY2/K1KFi80oGwRdB6xJ6PWXIucQusXSrvDmQA9NYjkdSpx0Lq/pW2N5" +
+			"TAPKC8BqhyMNobS5rXjLHycq/l5SwdKn/vR5pmLNirwCeB2JJTOlIp9pTN4/f9I/lrWgvy78nKAtQHGWYokMA2+EjwXbU3WyFVy//mfP" +
+			"iK+oRdCdSyyWyD7f6OibPT1VsYWCCwreU/Nb4aQ7vx3Ylu4oHrdQXuoBoG8wRjyuaRsqcjRqlj873LHq6qKC5U/2eTUmPyjyWLoD1Dy0" +
+			"nA/eLqa4yAXApZFp3vnoMl3dUSeSJ12e6e39R0JT89tNYkcrZj52Ind/pZfW3avm5ABWFLnYv3sl91Wk/zwJWjMdd32Y2H6DYPDx/ueB" +
+			"19POCuza4cOV9DHB5RIaXvQ5SYWoNgbqBp5ZUHDt1sE7VKTVUUagwp9nG7s7aB9LQWtwW/+K2Ys5QQ+xZuB2p9n+GZu2jV0esY+loEhV" +
+			"mmcvDEDZ9kgZykuZZGv7dtw+9o19LCXKy/4t4TthRtDErVcBdya5vjw6waHvJ5LaD343TntHcnuaeIxYOwGkpqbTPeguHQJWZpoNYOOD" +
+			"y3jkgWUA/HR2kjO/TGaTDkEvDPiCpRLc0r9RjZzKKttNQi152G0ZUyukP+vPEirLIzSzctjRNxij7/z1TP0Ql9a6Ba3K5Ob66gIad6Se" +
+			"5z5tG2VPFoIoG9wIoQy+QI6fjnI1alF1bz5bNxVkLpGauwxKSSZ3/to3xf7DV3itaZjTWT4QKSgxQGG2Wa5MON7Jp8ttBofb/luNATKe" +
+			"TW8BEwbhYq4tUnDRoPTm2sIOgV6jyNlci9ihQo8xltWZaxE7dFo6zUB18AwwmGuZRBQJR074u81MOeJgroUSMWodAlEDoCp7gJu2HGRA" +
+			"FBefwMyGNXI8MIxyILdO81A+H+govwTzziQmz3oXcj8nCnrBcy323uz1nGD/kdC4qL7lNKHbLZSWLHxaKFuder+4EIo0/n6qcm51S1qH" +
+			"A3UD+0jjbFxfXcDTtYWsC+axtsRepDd8nfBQjAOHxzh7bsq2H4CK7I38GNg1vy3pyB32BRpQvl5MMFSWxxOPFqSUA6gM5FFfXUBJ8aJn" +
+			"sq8im/xJv2DGxaN8r+D1pL8Ril5TYjYFJUfFo1n+0+W3+eS6gLlA2edGIscCX8S97ooZydT/8vSYUpG9VtxULiYH/5ciehL2ryFmz6Gj" +
+			"LNFriH8B/0FuJFmUIa0AAAAASUVORK5CYII="
+	}
 };
 
 /** First minute or last minute change of URL item presence. */
@@ -375,8 +485,9 @@ QUnitDesktopNotifications.profiles.refreshConfig = function () {
 	var $item, $checkbox, $label, eventName, checkboxName;
 
 	/** Create wrapper. */
-	self.$list = document.createElement( "ul" );
+	self.$list = self.$list || document.createElement( "ul" );
 	self.$list.className = "events-wrapper";
+	self.$list.innerHTML = "";
 
 	/** Create a item describing that's the deal with the list, and add it to wrapper. */
 	$item = document.createElement( "li" );
@@ -591,6 +702,9 @@ QUnitDesktopNotifications.profiles.save = function () {
 
 	/** Revert to preview state. */
 	this.cancel();
+
+	/** Refresh select contents. */
+	this.refreshVisible();
 };
 
 /** Reverts panel state to previewing profiles. */
@@ -605,7 +719,7 @@ QUnitDesktopNotifications.profiles.cancel = function () {
 	self.$profilesLabel.innerHTML = "Choose profile to edit:";
 
 	/** Remove placeholder for new item, if it's present. */
-	if ( self.$newProfile ) {
+	if ( self.$newProfile && self.$newProfile.parentNode === self.$select ) {
 		self.$select.removeChild( self.$newProfile );
 		self.$newProfile = null;
 
@@ -616,12 +730,18 @@ QUnitDesktopNotifications.profiles.cancel = function () {
 
 /** Handler for saving new profile name. */
 QUnitDesktopNotifications.profiles.newProfileNameHandle = function () {
-	if ( self.$newProfile ) {
-		/** Remove non-ASCII characters from string, and make string lowercase. */
-		var normalizedLabel = event.target.value.replace( /[^\x00-\x7F]/g, "" ).toLowerCase();;
-
-		self.$newProfile.text = self.$newProfile.value = normalizedLabel;
+	if ( ! self.$newProfile ) {
+		return;
 	}
+
+	/** Remove non-ASCII characters from string, and make string lowercase. */
+	var normalizedLabel = event.target.value.replace( /[^\x00-\x7F]/g, "" ).toLowerCase();;
+
+	self.$newProfile.text = self.$newProfile.value = normalizedLabel;
+
+	normalizedLabel.length === 0 ?
+		self.$save.setAttribute( "disabled", "disabled" ) :
+		self.$save.removeAttribute( "disabled" );
 };
 
 /** Creates new profile. */
@@ -647,6 +767,9 @@ QUnitDesktopNotifications.profiles.new = function () {
 	/** Clear name input. */
 	self.$name.value = "";
 
+	/** With no name, "Save" button has to be disabled. */
+	self.$save.setAttribute( "disabled", "disabled" );
+
 	/** Focus cursor on user input. */
 	self.$name.focus();
 };
@@ -664,6 +787,35 @@ QUnitDesktopNotifications.profiles.delete = function () {
 	this.refreshVisible();
 };
 
+/** Returns true if notification for eventName should be generated for current profile, false otherwise. */
+QUnitDesktopNotifications.profiles.shouldNotify = function ( eventName ) {
+	return !! this.profile( QUnit.urlParams.dnp )[ eventName ];
+};
+
+/** Ask for permission to show notifications. */
+QUnitDesktopNotifications.askNotificationsPermission = function () {
+	if ( ! Notification ) {
+		console.error( "QUnit Desktop Notification require API to work." );
+		return;
+	}
+
+	/**
+	 * If permission isn't "default", user either decided on allowing or disallowing permission.
+	 * Let's respect that decision.
+	 */
+	if ( Notification.permission !== "default" ) {
+		return;
+	}
+
+	/** Ask for permission. */
+	Notification.requestPermission();
+};
+
+/** Ask for permission to show notifications. */
+QUnitDesktopNotifications.canNotify = function () {
+	return Notification && Notification.permission === "granted";
+};
+
 /** In case QUnit was not found, generate error and don't initialize desktop notifications. */
 if ( typeof window.QUnit === "undefined" ) {
 	console.error( "QUnit Desktop Notifications should be included after QUnit." );
@@ -671,7 +823,6 @@ if ( typeof window.QUnit === "undefined" ) {
 	QUnit.begin( function () {
 		self.prependLinkToDom();
 		self.addDomHandlers();
-		self.log.begin();
 	});
 }
 

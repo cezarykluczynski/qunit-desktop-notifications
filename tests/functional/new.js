@@ -31,9 +31,23 @@ define([
 				.then( function ( activeElementName ) {
 					assert.equal( activeElementName, "name" );
 				})
+				/** Assert that "Save" button is disabled when no name is typed. */
+				.findByCssSelector( "button[action=\"save\"]" )
+					.isEnabled()
+					.then( function ( enabled ) {
+						assert.notOk( enabled );
+					})
+					.end()
 				/** Enter profile name. */
 				.findByCssSelector( "input[name=\"name\"]" )
 					.type( "Test" )
+					.end()
+				/** Assert that "Save" button is enabled when name is typed. */
+				.findByCssSelector( "button[action=\"save\"]" )
+					.isEnabled()
+					.then( function ( enabled ) {
+						assert.ok( enabled );
+					})
 					.end()
 				/** Find option, and assert it's label. */
 				.findByCssSelector( "select option[value=\"test\"]" )
@@ -74,7 +88,14 @@ define([
 							testDone: false,
 							testStart: false
 					}, "Profile saved to localStorage." );
-				});
+				})
+				/** Find option again, and assert it's been keept in select. */
+				.findByCssSelector( "select option[name=\"test\"]" )
+					.getVisibleText()
+					.then( function ( text ) {
+						assert.equal( text, "test" );
+					})
+					.end()
 		}
 	});
 });
