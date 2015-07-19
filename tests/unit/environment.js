@@ -4,8 +4,8 @@ define([
 	"intern!object",
 	"intern/chai!assert",
 	"require",
-	"src/qunit-desktop-notifications"
-], function ( registerSuite, assert, require, qunit ) {
+	"tests/support/helper"
+], function ( registerSuite, assert, require, qUnitDesktopNotifications ) {
 	registerSuite({
 		name: "Plugin behaves differently based on environment.",
 

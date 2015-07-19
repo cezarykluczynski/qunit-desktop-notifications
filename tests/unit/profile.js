@@ -6,7 +6,7 @@ define([
 	"require",
 	"src/qunit-desktop-notifications",
 	"tests/support/helper"
-], function ( registerSuite, assert, require, qunit, testHelper ) {
+], function ( registerSuite, assert, require, qUnitDesktopNotifications, testHelper ) {
 	var basicFixture = {
 		"default": {
 			done: true

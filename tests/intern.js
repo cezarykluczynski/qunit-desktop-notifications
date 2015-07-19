@@ -3,7 +3,8 @@ define({
 		"tests/unit/smoke",
 		"tests/unit/environment",
 		"tests/unit/messages",
-		"tests/unit/profile"
+		"tests/unit/notifications",
+		"tests/unit/profile",
 	],
 	proxyPort: 9090,
 	proxyUrl: "http://localhost:9090/",
@@ -22,7 +23,7 @@ define({
 		"tests/functional/register",
 		"tests/functional/initialization",
 		"tests/functional/localStorage",
-		"tests/functional/panel"
+		"tests/functional/panel",
 	],
 	excludeInstrumentation: /tests|node_modules|bower_components/
 });

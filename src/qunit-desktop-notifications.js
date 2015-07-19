@@ -181,7 +181,7 @@ QUnitDesktopNotifications.notifications = {
 			return;
 		}
 
-		new Notification( this.getMessageTitle( eventName, details ), {
+		new window.Notification( this.getMessageTitle( eventName, details ), {
 			body: this.getMessageBody( eventName, details ),
 			icon: this.getMessageIcon( eventName, details )
 		});
@@ -195,7 +195,7 @@ QUnitDesktopNotifications.notifications = {
 					0: "No tests are scheduled.",
 					1: "1 test is scheduled.",
 					2: details.totalTests + " tests are scheduled.",
-				}[ details.totalTests >= 2 ? 2 : details.totalTests ]
+				}[ details.totalTests >= 2 ? 2 : details.totalTests ];
 			},
 			done: function () {
 				var total = {
@@ -794,26 +794,26 @@ QUnitDesktopNotifications.profiles.shouldNotify = function ( eventName ) {
 
 /** Ask for permission to show notifications. */
 QUnitDesktopNotifications.askNotificationsPermission = function () {
-	if ( ! Notification ) {
+	if ( ! window.Notification ) {
 		console.error( "QUnit Desktop Notification require API to work." );
-		return;
+		return false;
 	}
 
 	/**
 	 * If permission isn't "default", user either decided on allowing or disallowing permission.
 	 * Let's respect that decision.
 	 */
-	if ( Notification.permission !== "default" ) {
-		return;
+	if ( window.Notification.permission !== "default" ) {
+		return false;
 	}
 
 	/** Ask for permission. */
-	Notification.requestPermission();
+	window.Notification.requestPermission();
 };
 
 /** Ask for permission to show notifications. */
 QUnitDesktopNotifications.canNotify = function () {
-	return Notification && Notification.permission === "granted";
+	return window.Notification && window.Notification.permission === "granted";
 };
 
 /** In case QUnit was not found, generate error and don't initialize desktop notifications. */

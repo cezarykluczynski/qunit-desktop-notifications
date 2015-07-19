@@ -5,7 +5,7 @@ define([
 	"intern/chai!assert",
 	"require",
 	"src/qunit-desktop-notifications"
-], function ( registerSuite, assert, require, qunit ) {
+], function ( registerSuite, assert, require, qUnitDesktopNotifications ) {
 	registerSuite({
 		name: "Smoke test",
 		/** Smoke test checking if QUnitDesktopNotifications is executed without syntax errors */
