@@ -34,7 +34,23 @@ define([
 				"2 tests executed, 1 passed, 1 failed." );
 			assert.equal( n.getMessageBody( "done", { total: 2, passed: 0, failed: 2 } ),
 				"2 tests executed, 0 passed, 2 failed." );
-		}
+		},
+		log: function () {
+			assert.equal( n.getMessageTitle( "log", { result: true } ), "Assertion passed." );
+			assert.equal( n.getMessageTitle( "log", { result: false } ), "Assertion failed." );
 
+			assert.equal( n.getMessageBody( "log", { name: "Test", result: true } ), "Assertion \"Test\" passed" );
+			assert.equal( n.getMessageBody( "log", { name: "Test", result: true } ), "Assertion \"Test\" passed" );
+		},
+		moduleStart: function () {
+			assert.equal( n.getMessageTitle( "moduleStart", { name: "Tests" } ), "Module started." );
+
+			assert.equal( n.getMessageBody( "moduleStart", { name: "Tests" } ), "Module \"Tests\" started" );
+		},
+		moduleStop: function () {
+			assert.equal( n.getMessageTitle( "moduleStop", { name: "Tests" } ), "Module finished." );
+
+			assert.equal( n.getMessageBody( "moduleStop", { name: "Tests" } ), "Module \"Tests\" finished" );
+		}
 	});
 });

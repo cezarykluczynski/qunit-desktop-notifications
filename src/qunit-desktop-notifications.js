@@ -205,7 +205,10 @@ QUnitDesktopNotifications.notifications = {
 				}[ details.total >= 2 ? 2 : details.total ];
 
 				return total + ", " + details.passed + " passed, " + details.failed + " failed.";
-			}
+			},
+			log: "Assertion \"" + details.name + "\" " + ( details.result ? "passed" : "failed" ),
+			moduleStart: "Module \"" + details.name + "\" started",
+			moduleStop: "Module \"" + details.name + "\" finished",
 		}[ eventName ];
 
 		return typeof message === "function" ? message() : message;
@@ -216,6 +219,8 @@ QUnitDesktopNotifications.notifications = {
 			begin: "Tests began.",
 			done: "Tests are done, " + ( details.failed ? "with" : "without" ) + " errors.",
 			log: "Assertion " + ( details.result ? "passed" : "failed" ) + ".",
+			moduleStart: "Module started.",
+			moduleStop: "Module finished.",
 		}[ eventName ];
 	},
 	getMessageIcon: function ( eventName, details ) {
@@ -229,7 +234,7 @@ QUnitDesktopNotifications.notifications = {
 			return details.failed ? this.icons.error : this.icons.tick;
 		}
 
-		/** Single assertion has "result" key set to true is assertion passed. */
+		/** Single assertion has "result" key set to true if assertion passed. */
 		return details.result ? this.icons.tick : this.icons.error;
 	},
 	icons: {
