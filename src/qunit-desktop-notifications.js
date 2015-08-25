@@ -208,7 +208,9 @@ QUnitDesktopNotifications.notifications = {
 			},
 			log: "Assertion \"" + details.name + "\" " + ( details.result ? "passed" : "failed" ),
 			moduleStart: "Module \"" + details.name + "\" started",
-			moduleStop: "Module \"" + details.name + "\" finished",
+			moduleStop: "Module \"" + details.name + "\" " + ( details.failed ? "failed" : "passed" ),
+			testStart: "Test \"" + details.name + "\" started",
+			testDone: "Test \"" + details.name + "\" " + ( details.failed ? "failed" : "passed" ),
 		}[ eventName ];
 
 		return typeof message === "function" ? message() : message;
@@ -221,6 +223,8 @@ QUnitDesktopNotifications.notifications = {
 			log: "Assertion " + ( details.result ? "passed" : "failed" ) + ".",
 			moduleStart: "Module started.",
 			moduleStop: "Module finished.",
+			testStart: "Test started.",
+			testDone: "Test finished.",
 		}[ eventName ];
 	},
 	getMessageIcon: function ( eventName, details ) {

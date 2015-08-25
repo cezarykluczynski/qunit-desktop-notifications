@@ -50,7 +50,19 @@ define([
 		moduleStop: function () {
 			assert.equal( n.getMessageTitle( "moduleStop", { name: "Tests" } ), "Module finished." );
 
-			assert.equal( n.getMessageBody( "moduleStop", { name: "Tests" } ), "Module \"Tests\" finished" );
+			assert.equal( n.getMessageBody( "moduleStop", { name: "Tests", failed: 0 } ), "Module \"Tests\" passed" );
+			assert.equal( n.getMessageBody( "moduleStop", { name: "Tests", failed: 1 } ), "Module \"Tests\" failed" );
+		},
+		testStart: function () {
+			assert.equal( n.getMessageTitle( "testStart", { name: "Tests" } ), "Test started." );
+
+			assert.equal( n.getMessageBody( "testStart", { name: "Tests" } ), "Test \"Tests\" started" );
+		},
+		testDone: function () {
+			assert.equal( n.getMessageTitle( "testDone", { name: "Tests" } ), "Test finished." );
+
+			assert.equal( n.getMessageBody( "testDone", { name: "Tests", failed: 0 } ), "Test \"Tests\" passed" );
+			assert.equal( n.getMessageBody( "testDone", { name: "Tests", failed: 1 } ), "Test \"Tests\" failed" );
 		}
 	});
 });
