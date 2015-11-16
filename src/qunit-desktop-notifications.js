@@ -208,7 +208,7 @@ QUnitDesktopNotifications.notifications = {
 			},
 			log: "Assertion \"" + details.name + "\" " + ( details.result ? "passed" : "failed" ),
 			moduleStart: "Module \"" + details.name + "\" started",
-			moduleStop: "Module \"" + details.name + "\" " + ( details.failed ? "failed" : "passed" ),
+			moduleDone: "Module \"" + details.name + "\" " + ( details.failed ? "failed" : "passed" ),
 			testStart: "Test \"" + details.name + "\" started",
 			testDone: "Test \"" + details.name + "\" " + ( details.failed ? "failed" : "passed" ),
 		}[ eventName ];
@@ -222,7 +222,7 @@ QUnitDesktopNotifications.notifications = {
 			done: "Tests are done, " + ( details.failed ? "with" : "without" ) + " errors.",
 			log: "Assertion " + ( details.result ? "passed" : "failed" ) + ".",
 			moduleStart: "Module started.",
-			moduleStop: "Module finished.",
+			moduleDone: "Module finished.",
 			testStart: "Test started.",
 			testDone: "Test finished.",
 		}[ eventName ];
@@ -239,7 +239,7 @@ QUnitDesktopNotifications.notifications = {
 		}
 
 		/** Single assertion has "result" key set to true if assertion passed. */
-		return details.result ? this.icons.tick : this.icons.error;
+		return details.result === true ? this.icons.tick : this.icons.error;
 	},
 	icons: {
 		/**
@@ -739,12 +739,8 @@ QUnitDesktopNotifications.profiles.cancel = function () {
 
 /** Handler for saving new profile name. */
 QUnitDesktopNotifications.profiles.newProfileNameHandle = function () {
-	if ( ! self.$newProfile ) {
-		return;
-	}
-
 	/** Remove non-ASCII characters from string, and make string lowercase. */
-	var normalizedLabel = event.target.value.replace( /[^\x00-\x7F]/g, "" ).toLowerCase();;
+	var normalizedLabel = event.target.value.replace( /[^\x00-\x7F]/g, "" ).toLowerCase();
 
 	self.$newProfile.text = self.$newProfile.value = normalizedLabel;
 

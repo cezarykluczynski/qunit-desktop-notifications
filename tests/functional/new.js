@@ -49,6 +49,21 @@ define([
 						assert.ok( enabled );
 					})
 					.end()
+				/** Clear input. */
+				.findByCssSelector( "input[name=\"name\"]" )
+					.type( "\b\b\b\b" )
+					.end()
+				/** Assert that "Save" button is disabled again when name is cleared. */
+				.findByCssSelector( "button[action=\"save\"]" )
+					.isEnabled()
+					.then( function ( enabled ) {
+						assert.notOk( enabled );
+					})
+					.end()
+				/** Revert to "Test" value. */
+				.findByCssSelector( "input[name=\"name\"]" )
+					.type( "Test" )
+					.end()
 				/** Find option, and assert it's label. */
 				.findByCssSelector( "select option[value=\"test\"]" )
 					.getVisibleText()
